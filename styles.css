@@ -54,6 +54,10 @@
   --color-accent-green-bg: hsl(140, 45%, 15%); 
 }
 
+body.dark footer, [data-theme="dark"] footer {
+    background-color: hsl(25, 20%, 10%) !important;
+}
+
 /* Reset y Estilos Base */
 *, *::before, *::after {
   box-sizing: border-box;
