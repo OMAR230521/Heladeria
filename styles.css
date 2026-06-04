@@ -40,7 +40,7 @@
 
 /* Modo Oscuro (Preferencia del sistema o Toggle) */
 [data-theme="dark"] {
-  --color-primary: hsl(30, 20%, 90%);       /* Crema muy claro */
+  --color-primary: hsl(25, 20%, 10%);       /*Chocolate oscuro profundo*/
   --color-primary-light: hsl(30, 15%, 75%);
   --color-secondary: hsl(343, 90%, 65%);     /* Frambuesa un poco más luminoso */
   --color-secondary-hover: hsl(343, 90%, 55%);
@@ -51,8 +51,7 @@
   --color-text-muted: hsl(25, 10%, 70%);
   --color-border: hsl(25, 15%, 20%);
   --color-shadow: rgba(0, 0, 0, 0.3);
-  --color-accent-green-bg: hsl(140, 45%, 15%);
-  --color-primary: hsl(25, 20%, 10%);       /*Chocolate oscuro profundo*/ 
+  --color-accent-green-bg: hsl(140, 45%, 15%); 
 }
 
 /* Reset y Estilos Base */
