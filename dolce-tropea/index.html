@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+  <title>Dolce Tropea | Helados Artesanales & Cafetería Premium en Comodoro Rivadavia</title>
+  
+  <!-- SEO Meta Tags -->
+  <meta name="description" content="Disfrutá del mejor helado artesanal, copas gigantes, milkshakes irresistibles y deliciosas meriendas en Comodoro Rivadavia. Abierto hasta tarde (1 a.m.). ¡Mirá nuestra carta digital interactiva!">
+  <meta name="keywords" content="Dolce Tropea, heladeria comodoro rivadavia, cafeteria comodoro rivadavia, milkshakes comodoro, meriendas comodoro rivadavia, helado artesanal chubut, av polonia 389">
+  <meta name="author" content="Dolce Tropea">
+  <link rel="canonical" href="https://dolcetropea.com.ar">
+  
+  <!-- Open Graph / Facebook / Instagram -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://dolcetropea.com.ar/">
+  <meta property="og:title" content="Dolce Tropea | Heladería & Cafetería en Comodoro">
+  <meta property="og:description" content="Carta digital interactiva. Abierto todos los días de 15:00 a 01:00 AM en Av. Polonia 389.">
+  <meta property="og:image" content="assets/hero_gelato_coffee.png">
+
+  <!-- Twitter -->
+  <meta property="twitter:card" content="summary_large_image">
+  <meta property="twitter:url" content="https://dolcetropea.com.ar/">
+  <meta property="twitter:title" content="Dolce Tropea | Heladería & Cafetería en Comodoro">
+  <meta property="twitter:description" content="Carta digital interactiva. Abierto todos los días de 15:00 a 01:00 AM en Av. Polonia 389.">
+  <meta property="twitter:image" content="assets/hero_gelato_coffee.png">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🍦</text></svg>">
+
+  <!-- Estilos CSS -->
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- ==========================================
+       HEADER & NAVEGACIÓN
+       ========================================== -->
+  <header class="header">
+    <div class="container header-container">
+      <a href="#" class="logo" aria-label="Ir al inicio de Dolce Tropea">
+        <span class="logo-text">Dolce Tropea</span>
+      </a>
+
+      <!-- Menú Desktop -->
+      <nav aria-label="Navegación principal">
+        <ul class="nav-links">
+          <li><a href="#inicio">Inicio</a></li>
+          <li><a href="#menu">Menú Digital</a></li>
+          <li><a href="#horarios">Horarios & Ubicación</a></li>
+          <li><a href="#testimonios">Opiniones</a></li>
+        </ul>
+      </nav>
+
+      <div class="nav-actions">
+        <!-- Alternador de Tema -->
+        <button id="theme-toggle" class="theme-toggle" aria-label="Cambiar a modo oscuro">🌙</button>
+        
+        <!-- CTA Principal Header -->
+        <a href="#menu" class="btn btn-secondary" style="padding: 10px 20px; font-size: 0.9rem; display: none;">Ver Menú</a>
+        
+        <!-- Botón Hamburguesa -->
+        <button class="mobile-nav-toggle" aria-label="Abrir menú de navegación" aria-expanded="false">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ==========================================
+       HERO SECTION
+       ========================================== -->
+  <section id="inicio" class="hero">
+    <div class="container hero-grid">
+      <div class="hero-content">
+        <!-- Indicador de Abierto/Cerrado Inteligente -->
+        <div class="hero-badge" id="status-pill">
+          Cargando estado...
+        </div>
+        
+        <h1 class="hero-title">
+          Frescura artesanal y <span>calidez cafetera</span> en Comodoro
+        </h1>
+        <p class="hero-description">
+          Disfrutá de los helados más cremosos de la Patagonia, milkshakes irresistibles cargados de sabor y las meriendas calentitas más ricas. ¡Precios competitivos y la mejor atención en Comodoro Rivadavia!
+        </p>
+        <div class="hero-ctas">
+          <a href="#menu" class="btn btn-primary" aria-label="Ver el menú digital interactivo">
+            📖 Ver Menú Digital
+          </a>
+          <a href="https://wa.me/5492975148986?text=Hola%20Dolce%20Tropea!%20Me%20gustaria%20hacer%20una%20consulta." target="_blank" class="btn btn-whatsapp" aria-label="Hacer un pedido directo por WhatsApp">
+            💬 Pedir en Línea
+          </a>
+        </div>
+        
+        <!-- Información Rápida en Pills -->
+        <div class="hero-info-pills">
+          <div class="info-pill">
+            <div class="info-pill-icon" aria-hidden="true">📍</div>
+            <div class="info-pill-text">
+              <h4>Av. Polonia 389</h4>
+              <p>Comodoro Rivadavia</p>
+            </div>
+          </div>
+          <div class="info-pill">
+            <div class="info-pill-icon" aria-hidden="true">⏰</div>
+            <div class="info-pill-text">
+              <h4>Hasta las 01:00 AM</h4>
+              <p>Abierto de noche</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Imagen del Hero y Tarjeta Flotante -->
+      <div class="hero-image-wrapper">
+        <div class="hero-image-bg"></div>
+        <img src="assets/hero_gelato_coffee.png" alt="Delicioso helado artesanal italiano y milkshake premium en una mesa de Dolce Tropea" class="hero-image">
+        
+        <div class="hero-floating-card">
+          <div class="floating-card-avatar" aria-hidden="true">★</div>
+          <div class="floating-card-info">
+            <h5>Javier y el staff</h5>
+            <p>“Atención excelente y milkshakes de otro mundo”</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================
+       MENÚ DIGITAL INTERACTIVO (NÚCLEO)
+       ========================================== -->
+  <section id="menu" class="menu-section">
+    <div class="container">
+      <div class="section-header">
+        <h2 class="section-title">Nuestra Carta</h2>
+        <p class="section-subtitle">Seleccioná una categoría para explorar nuestra variedad de sabores, postres y meriendas. Realizá tu pedido directo por WhatsApp en cada producto.</p>
+      </div>
+
+      <div class="menu-categories-grid">
+        <!-- Tarjeta Categoría Helados -->
+        <a href="helados.html" class="category-card">
+          <div class="category-icon" aria-hidden="true">🍦</div>
+          <h3>Helados & Milkshakes</h3>
+          <p>Cremas artesanales premium, paletas y milkshakes espectaculares.</p>
+          <span class="category-link">Ver Variedad →</span>
+        </a>
+
+        <!-- Tarjeta Categoría Postres Helados -->
+        <a href="postres.html" class="category-card">
+          <div class="category-icon" aria-hidden="true">🍰</div>
+          <h3>Postres Helados</h3>
+          <p>Almendrados, tortas heladas, alfajores helados y bombones.</p>
+          <span class="category-link">Ver Variedad →</span>
+        </a>
+
+        <!-- Tarjeta Categoría Cafetería -->
+        <a href="cafeteria.html" class="category-card">
+          <div class="category-icon" aria-hidden="true">☕</div>
+          <h3>Cafetería & Bebidas</h3>
+          <p>Café italiano, chocolate Mamuschka caliente y jugos exprimidos.</p>
+          <span class="category-link">Ver Variedad →</span>
+        </a>
+
+        <!-- Tarjeta Categoría Pastelería -->
+        <a href="pasteleria.html" class="category-card">
+          <div class="category-icon" aria-hidden="true">🥐</div>
+          <h3>Panificados & Pastelería</h3>
+          <p>Croissants con jamón crudo, cookies Dubai, chipá y rolls de canela.</p>
+          <span class="category-link">Ver Variedad →</span>
+        </a>
+
+        <!-- Tarjeta Categoría Salados -->
+        <a href="salados.html" class="category-card">
+          <div class="category-icon" aria-hidden="true">🍔</div>
+          <h3>Salados Especiales</h3>
+          <p>Sándwiches ahumados de bondiola, pulled pork y brisket texano.</p>
+          <span class="category-link">Ver Variedad →</span>
+        </a>
+
+        <!-- Tarjeta Categoría Chocolatería -->
+        <a href="chocolateria.html" class="category-card">
+          <div class="category-icon" aria-hidden="true">🍫</div>
+          <h3>Chocolatería Premium</h3>
+          <p>Línea exclusiva de chocolates Dubai y grageas Mamuschka.</p>
+          <span class="category-link">Ver Variedad →</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================
+       GEOLOCALIZACIÓN Y DATOS PRÁCTICOS
+       ========================================== -->
+  <section id="horarios" class="info-section">
+    <div class="container">
+      <div class="section-header">
+        <h2 class="section-title">Horarios & Ubicación</h2>
+        <p class="section-subtitle">Te esperamos en el corazón comercial de la Avenida Polonia. Ideal para visitas tardías después de cenar.</p>
+      </div>
+
+      <div class="info-grid">
+        <div class="info-details">
+          <!-- Tarjeta de Horario Dinámico -->
+          <div class="info-card">
+            <div class="info-card-icon" aria-hidden="true">🕒</div>
+            <div class="info-card-content">
+              <h3>Horarios de Atención</h3>
+              <div class="live-status open" id="live-status-badge">
+                <span class="status-dot"></span>Cargando estado...
+              </div>
+              <p id="live-status-text">Cargando detalles de horarios del comercio...</p>
+              <p><strong>Lunes a Domingos:</strong> 15:00 PM – 01:00 AM</p>
+            </div>
+          </div>
+
+          <!-- Tarjeta de Dirección -->
+          <div class="info-card">
+            <div class="info-card-icon" aria-hidden="true">📍</div>
+            <div class="info-card-content">
+              <h3>Ubicación Física</h3>
+              <p>Av. Polonia 389, Comodoro Rivadavia, Chubut</p>
+              <p>Zona sur, de fácil estacionamiento y acceso rápido desde el auto.</p>
+              <a href="https://maps.google.com/?q=Av.+Polonia+389,+Comodoro+Rivadavia,+Chubut" target="_blank" class="btn btn-secondary" style="align-self: flex-start; padding: 8px 16px; margin-top: 10px; font-size: 0.85rem;" aria-label="Abrir mapa en Google Maps externa">
+                🧭 Cómo Llegar (Google Maps)
+              </a>
+            </div>
+          </div>
+
+          <!-- Tarjeta de Contacto Directo -->
+          <div class="info-card">
+            <div class="info-card-icon" aria-hidden="true">📞</div>
+            <div class="info-card-content">
+              <h3>Contacto Directo</h3>
+              <p>Hacé tu pedido o consultá por sabores disponibles del día.</p>
+              <p><strong>WhatsApp:</strong> +54 9 297 514-8986</p>
+              <p><strong>Llamadas:</strong> 0297 514-8986</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Google Maps Iframe Embed -->
+        <div class="map-wrapper">
+          <iframe 
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2938.80004380629!2d-67.51408802344795!3d-45.867909371083944!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x95f69f206689d0b5%3A0xc3cf9c98fb41f122!2sAv.%20Polonia%20389%2C%20U9000%20Comodoro%20Rivadavia%2C%20Chubut!5e0!3m2!1ses-419!2sar!4v1700000000000!5m2!1ses-419!2sar" 
+            class="map-frame" 
+            allowfullscreen="" 
+            loading="lazy" 
+            referrerpolicy="no-referrer-when-downgrade"
+            title="Ubicación de Dolce Tropea en Av. Polonia 389, Comodoro Rivadavia">
+          </iframe>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================
+       PRUEBA SOCIAL (TESTIMONIOS REALES)
+       ========================================== -->
+  <section id="testimonios" class="testimonials-section">
+    <div class="container">
+      <div class="section-header">
+        <h2 class="section-title">Qué Dicen Nuestros Clientes</h2>
+        <p class="section-subtitle">Nuestra prioridad es que pases un momento dulce. Opiniones reales de Google Maps sobre la experiencia en Dolce Tropea.</p>
+      </div>
+
+      <div class="testimonials-grid">
+        <!-- Testimonio 1 -->
+        <article class="testimonial-card">
+          <div class="stars" aria-label="Calificación: 5 de 5 estrellas">★★★★★</div>
+          <p class="testimonial-text">
+            "Los helados son súper ricos y cremosos, pero lo que más nos gusta son los milkshakes. Tienen un tamaño gigante y los preparan riquísimos. Destaco la buena onda de Javier y las chicas en la atención, siempre con una sonrisa."
+          </p>
+          <div class="testimonial-user">
+            <div class="user-avatar" aria-hidden="true">MA</div>
+            <div class="user-info">
+              <h4>Mariano A.</h4>
+              <p>Guía Local de Comodoro</p>
+            </div>
+          </div>
+        </article>
+
+        <!-- Testimonio 2 -->
+        <article class="testimonial-card">
+          <div class="stars" aria-label="Calificación: 5 de 5 estrellas">★★★★★</div>
+          <p class="testimonial-text">
+            "Nos encanta venir de noche porque cierra tarde, ideal para cuando salís a cenar tarde en Comodoro y querés algo dulce. Los precios son súper competitivos en comparación a otras heladerías del centro."
+          </p>
+          <div class="testimonial-user">
+            <div class="user-avatar" aria-hidden="true">LF</div>
+            <div class="user-info">
+              <h4>Laura F.</h4>
+              <p>Cliente Habitual</p>
+            </div>
+          </div>
+        </article>
+
+        <!-- Testimonio 3 -->
+        <article class="testimonial-card">
+          <div class="stars" aria-label="Calificación: 5 de 5 estrellas">★★★★★</div>
+          <p class="testimonial-text">
+            "Excelente lugar para merendar. Pedimos el alfajor de pistacho con capuchino y estaba increíble. El local es moderno y la música acompaña re bien. ¡Se convirtió en nuestro lugar favorito de la Polonia!"
+          </p>
+          <div class="testimonial-user">
+            <div class="user-avatar" aria-hidden="true">SP</div>
+            <div class="user-info">
+              <h4>Santiago P.</h4>
+              <p>Opinión de Google</p>
+            </div>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+
+
+  <!-- ==========================================
+       FOOTER
+       ========================================== -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <span class="footer-logo">Dolce Tropea</span>
+          <p class="footer-description">Heladería y Cafetería premium en Comodoro Rivadavia. Tradición heladera italiana y cafetería de especialidad con la calidez patagónica.</p>
+        </div>
+        <div class="footer-links">
+          <h4>Navegación</h4>
+          <ul>
+            <li><a href="#inicio">Inicio</a></li>
+            <li><a href="#menu">Menú Digital</a></li>
+            <li><a href="#horarios">Horarios & Ubicación</a></li>
+            <li><a href="#testimonios">Opiniones</a></li>
+          </ul>
+        </div>
+        <div class="footer-contact">
+          <h4>Contacto & Dirección</h4>
+          <ul>
+            <li>📍 Av. Polonia 389, Comodoro Rivadavia</li>
+            <li>📞 Teléfono: 0297 514-8986</li>
+            <li>💬 WhatsApp: +54 9 297 514-8986</li>
+            <li>⏰ Todos los días: 15:00 - 01:00 AM</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <p>&copy; 2026 Dolce Tropea. Todos los derechos reservados. Comodoro Rivadavia, Chubut.</p>
+        <p>Diseño Web Mobile-First & Premium para Gastronomía.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="app.js"></script>
+  <script>
+    // Enlace del estado inicial del hero con el estado de apertura dinámico
+    document.addEventListener('DOMContentLoaded', () => {
+      const heroPill = document.getElementById('status-pill');
+      const updateHeroPill = () => {
+        const now = new Date();
+        const currentHour = now.getHours();
+        let isOpen = false;
+        
+        if (currentHour >= 15 || currentHour < 1) {
+          isOpen = true;
+        }
+        
+        if (isOpen) {
+          heroPill.className = 'hero-badge';
+          heroPill.style.backgroundColor = 'var(--color-accent-green-bg)';
+          heroPill.style.color = 'var(--color-accent-green)';
+          heroPill.innerHTML = '🟢 Abierto ahora - Cierra 01:00 AM';
+        } else {
+          heroPill.className = 'hero-badge';
+          heroPill.style.backgroundColor = 'rgba(249, 59, 105, 0.1)';
+          heroPill.style.color = 'var(--color-secondary)';
+          heroPill.innerHTML = '🔴 Cerrado - Abre 15:00 PM';
+        }
+      };
+      
+      updateHeroPill();
+      setInterval(updateHeroPill, 60000);
+    });
+  </script>
+</body>
+</html>
