@@ -55,7 +55,7 @@
 }
 
 body.dark footer, [data-theme="dark"] footer {
-    background-color: hsl(25, 20%, 10%) !important;
+    background-color: hsl(25, 20%, 10%) !important;    /* Chocolate oscuro profundo*/
 }
 
 /* Reset y Estilos Base */
