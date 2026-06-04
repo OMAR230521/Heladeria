@@ -40,7 +40,7 @@
 
 /* Modo Oscuro (Preferencia del sistema o Toggle) */
 [data-theme="dark"] {
-  --color-primary: hsl(25, 20%, 10%);       /*Chocolate oscuro profundo*/
+  --color-primary: hsl(30, 20%, 90%);       /* Crema muy claro */
   --color-primary-light: hsl(30, 15%, 75%);
   --color-secondary: hsl(343, 90%, 65%);     /* Frambuesa un poco más luminoso */
   --color-secondary-hover: hsl(343, 90%, 55%);
