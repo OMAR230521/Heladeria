@@ -52,6 +52,7 @@
   --color-border: hsl(25, 15%, 20%);
   --color-shadow: rgba(0, 0, 0, 0.3);
   --color-accent-green-bg: hsl(140, 45%, 15%);
+  --color-primary: hsl(25, 20%, 10%);       /*Chocolate oscuro profundo*/ 
 }
 
 /* Reset y Estilos Base */
