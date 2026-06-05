@@ -505,7 +505,12 @@ function guardarYRenderizar() {
     actualizarContador();
 }
 
-// --- 3. RENDERIZADO ---
+// --- 3. RENDERIZADO CORREGIDO ---
+
+// Definimos las opciones que faltan
+const variedadesCafe = ["Capuccino", "Latte", "Flat white", "Cortado", "Espresso simple", "Espresso doble", "Americano simple", "Americano doble"];
+const tiposLeche = ["Entera", "Descremada", "Almendra"];
+
 function renderizarCarrito() {
     const container = document.getElementById('cart-items');
     const totalContainer = document.getElementById('cart-total');
@@ -541,16 +546,43 @@ function renderizarCarrito() {
 }
 
 function generarSelectores(p, index) {
-    if (p.tipo !== "helado") return "";
-    let selectores = `<div style="font-size:11px; color:#888; margin-bottom:5px;">SABORES (Elegí ${p.tope}):</div>`;
-    for (let i = 0; i < p.tope; i++) {
+    let selectores = "";
+
+    // 1. Si es Helado
+    if (p.tipo === "helado") {
+        selectores += `<div style="font-size:11px; color:#888; margin-bottom:5px;">SABORES (Elegí ${p.tope}):</div>`;
+        for (let i = 0; i < p.tope; i++) {
+            selectores += `
+            <select onchange="guardarGusto(${index}, ${i}, this.value)" style="width:100%; padding:8px; margin-bottom:5px; border:1px solid #ffccd8; border-radius:8px; background:#fff;">
+                <option value="">Gusto ${i + 1}</option>
+                ${listaSaboresHelados.map(s => `<option value="${s}" ${p.gustos[i] === s ? 'selected' : ''}>${s}</option>`).join('')}
+            </select>`;
+        }
+    } 
+    // 2. Si es Café (Tiene variedad + leche)
+    else if (p.tipo === "cafe") {
         selectores += `
-        <select onchange="guardarGusto(${index}, ${i}, this.value)" style="width:100%; padding:8px; margin-bottom:5px; border:1px solid #ffccd8; border-radius:8px; background:#fff;">
-            <option value="">Gusto ${i + 1}</option>
-            ${listaSaboresHelados.map(s => `<option value="${s}" ${p.gustos[i] === s ? 'selected' : ''}>${s}</option>`).join('')}
+        <select onchange="actualizarExtra(${index}, 'variedad', this.value)" style="width:100%; padding:8px; margin-bottom:5px; border:1px solid #ffccd8; border-radius:8px;">
+            ${variedadesCafe.map(v => `<option value="${v}">${v}</option>`).join('')}
+        </select>
+        <select onchange="actualizarExtra(${index}, 'leche', this.value)" style="width:100%; padding:8px; margin-bottom:5px; border:1px solid #ffccd8; border-radius:8px;">
+            ${tiposLeche.map(l => `<option value="${l}">${l}</option>`).join('')}
+        </select>`;
+    }
+    // 3. Si es Chocolate (Solo leche)
+    else if (p.tipo === "chocolate") {
+        selectores += `
+        <select onchange="actualizarExtra(${index}, 'leche', this.value)" style="width:100%; padding:8px; margin-bottom:5px; border:1px solid #ffccd8; border-radius:8px;">
+            ${tiposLeche.map(l => `<option value="${l}">${l}</option>`).join('')}
         </select>`;
     }
     return selectores;
+}
+
+// Nueva función para guardar las elecciones de café/chocolate
+function actualizarExtra(index, campo, valor) {
+    carrito[index][campo] = valor;
+    localStorage.setItem('carrito', JSON.stringify(carrito));
 }
 
 function toggleCart() {
