@@ -549,7 +549,6 @@ function renderizarCarrito() {
 function generarSelectores(p, index) {
     let selectores = "";
 
-    // 1. Si es Helado
     if (p.tipo === "helado") {
         selectores += `<div style="font-size:11px; color:#888; margin-bottom:5px;">SABORES (Elegí ${p.tope}):</div>`;
         for (let i = 0; i < p.tope; i++) {
@@ -560,21 +559,19 @@ function generarSelectores(p, index) {
             </select>`;
         }
     } 
-    // 2. Si es Café (Tiene variedad + leche)
     else if (p.tipo === "cafe") {
         selectores += `
         <select onchange="actualizarExtra(${index}, 'variedad', this.value)" style="width:100%; padding:8px; margin-bottom:5px; border:1px solid #ffccd8; border-radius:8px;">
-            ${variedadesCafe.map(v => `<option value="${v}">${v}</option>`).join('')}
+            ${variedadesCafe.map(v => `<option value="${v}" ${p.variedad === v ? 'selected' : ''}>${v}</option>`).join('')}
         </select>
         <select onchange="actualizarExtra(${index}, 'leche', this.value)" style="width:100%; padding:8px; margin-bottom:5px; border:1px solid #ffccd8; border-radius:8px;">
-            ${tiposLeche.map(l => `<option value="${l}">${l}</option>`).join('')}
+            ${tiposLeche.map(l => `<option value="${l}" ${p.leche === l ? 'selected' : ''}>${l}</option>`).join('')}
         </select>`;
     }
-    // 3. Si es Chocolate (Solo leche)
     else if (p.tipo === "chocolate") {
         selectores += `
         <select onchange="actualizarExtra(${index}, 'leche', this.value)" style="width:100%; padding:8px; margin-bottom:5px; border:1px solid #ffccd8; border-radius:8px;">
-            ${tiposLeche.map(l => `<option value="${l}">${l}</option>`).join('')}
+            ${tiposLeche.map(l => `<option value="${l}" ${p.leche === l ? 'selected' : ''}>${l}</option>`).join('')}
         </select>`;
     }
     return selectores;
