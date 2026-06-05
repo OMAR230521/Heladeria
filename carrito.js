@@ -9,28 +9,54 @@ window.agregarAlCarrito = function(nombre, precio) {
     let tipo = "otro";
     let tope = 0;
     
-  // --- CLASIFICACIÓN ---
-    if (nombre.includes("1 Kg") || nombre.includes("1/2 Kg") || nombre.includes("1/4 Kg") || nombre.includes("Promo 2x1")) {
+    // --- CLASIFICACIÓN ---
+    if (nombre.includes("1 Kg") || nombre.includes("1/2 Kg") || nombre.includes("1/4 Kg") || HTML: nombre.includes("Promo 2x1")) {
         tipo = "helado";
         if (nombre.includes("1 Kg")) tope = 4;
         else if (nombre.includes("1/2 Kg")) tope = 3;
         else if (nombre.includes("1/4 Kg")) tope = 2;
         else if (nombre.includes("Promo 2x1")) tope = 4;
     } 
-    
     else if (nombre.toLowerCase().includes("batido de 3 bochas")) {
         tipo = "helado";
         tope = 3;
     } 
     else if (nombre.toLowerCase().includes("doble sabor") || nombre.toLowerCase().includes("milkshake")) {
         tipo = "helado";
-        tope = 8; 
+        // Volvemos a setear los 8 sabores que me pediste para el Doble Sabor
+        if (nombre.toLowerCase().includes("doble sabor")) {
+            tope = 8; 
+        } else {
+            tope = 2; // El milkshake queda en 2 o lo que necesites
+        }
     } 
     else if (nombre.toLowerCase().includes("café")) {
         tipo = "cafe";
     } 
     else if (nombre.toLowerCase().includes("mamuschka")) {
         tipo = "chocolate";
+    }
+
+    let precioNumerico = parseFloat(precio) || 0;
+
+    // LÓGICA DE AGRUPACIÓN ACTUALIZADA:
+    // Si es helado o el "doble sabor" de 8 gustos, NO los agrupamos por nombre. 
+    // Usamos Date.now() para que cada uno sea un ítem único con su propia lista de gustos.
+    let id = (tipo === "helado") ? Date.now() : nombre;
+    let productoExistente = carrito.find(item => item.id === id);
+
+    if (productoExistente) {
+        productoExistente.cantidad += 1;
+    } else {
+        carrito.push({
+            id: id,
+            nombre: nombre,
+            precioBase: precioNumerico,
+            tipo: tipo,
+            tope: tope,
+            cantidad: 1,
+            gustos: Array(tope).fill("")
+        });
     }
     guardarYRenderizar();
 }
@@ -71,14 +97,20 @@ function renderizarCarrito() {
         let precioItem = p.precioBase * p.cantidad;
         totalGeneral += precioItem;
 
+        // Si es helado normal va con "X", si son los batidos/promos va con +/-
+        const usaBotonesMasMenos = p.tipo !== 'helado' || 
+                                   p.nombre.toLowerCase().includes("batido") || 
+                                   p.nombre.toLowerCase().includes("sabor") || 
+                                   p.nombre.toLowerCase().includes("milkshake");
+
         html += `
         <div style="padding:15px; border-bottom:1px solid #eee; background:#fff; margin-bottom: 5px; border-radius: 8px;">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
                 <div style="font-weight:bold; font-size: 15px;">${p.nombre} ${p.tipo !== 'helado' ? `(x${p.cantidad})` : ''}</div>
                 <div style="display:flex; gap:5px;">
-                    ${p.tipo !== 'helado' ? `
-                        <button onclick="cambiarCantidad(${index}, -1)" style="border:1px solid #ff477e; border-radius:5px; width:30px; height:30px;">-</button>
-                        <button onclick="cambiarCantidad(${index}, 1)" style="border:1px solid #ff477e; border-radius:5px; width:30px; height:30px;">+</button>
+                    ${usaBotonesMasMenos ? `
+                        <button onclick="cambiarCantidad(${index}, -1)" style="border:1px solid #ff477e; border-radius:5px; width:30px; height:30px; background:#fff; color:#ff477e; font-weight:bold;">-</button>
+                        <button onclick="cambiarCantidad(${index}, 1)" style="border:1px solid #ff477e; border-radius:5px; width:30px; height:30px; background:#fff; color:#ff477e; font-weight:bold;">+</button>
                     ` : `
                         <button onclick="eliminarDelCarrito(${index})" style="background:#ffccd8; border:none; border-radius:50%; width:30px; height:30px;">X</button>
                     `}
@@ -98,6 +130,10 @@ function generarSelectores(p, index) {
 
     if (p.tipo === "helado") {
         selectores += `<div style="font-size:11px; color:#888; margin-bottom:5px;">SABORES (Elegí ${p.tope}):</div>`;
+        
+        // Creamos un contenedor scrolleable para que 8 selectores no ocupen toda la pantalla
+        selectores += `<div style="max-height: 200px; overflow-y: auto; padding-right: 5px;">`;
+        
         for (let i = 0; i < p.tope; i++) {
             selectores += `
             <select onchange="guardarGusto(${index}, ${i}, this.value)" style="width:100%; padding:8px; margin-bottom:5px; border:1px solid #ffccd8; border-radius:8px; background:#fff;">
@@ -105,6 +141,8 @@ function generarSelectores(p, index) {
                 ${listaSaboresHelados.map(s => `<option value="${s}" ${p.gustos[i] === s ? 'selected' : ''}>${s}</option>`).join('')}
             </select>`;
         }
+        
+        selectores += `</div>`;
     } 
     else if (p.tipo === "cafe") {
         selectores += `
