@@ -435,327 +435,79 @@ function setupEventListeners() {
   }
 }
 
-  // --- 1. BASES DE DATOS ---
+// --- 1. DATOS ---
 const listaSaboresHelados = ["MOUSSE DE CHOCOLATE", "MOUSSE DE FRAMBUESA", "MOUSSE DE LEMON PIE", "MOUSSE DE MARACUYA", "MOUSSE DE LIMON", "ANANA AL AGUA", "DURAZNO AL AGUA", "FRANUI AL AGUA", "FRUTILLA AL AGUA", "FRUTOS PATAGONICOS AL AGUA", "LIMON AL AGUA", "LIMON, JENGIBRE Y MENTA(AL AGUA)", "LIMON, JENGIBRE Y ALBAHACA(AL AGUA)", "DULCE DE LECHE BOMBON", "DULCE DE LECHE BROWNIE", "DULCE DE LECHE CLASICO", "CHOCOTORTA", "COCO CON DULCE DE LECHE", "DULCE DE LECHE CRUNCH", "FLAN CON DULCE DE LECHE", "DULCE DE LECHE GRANIZADO", "SUPER DULCE DE LECHE", "CHOCOLATE BLANCO", "CHOCOLATE BLOCK", "CHOCOLATE BUENARDO", "CHOCOLATE CLASICO", "CHOCOLATE CON ALMENDRAS", "CHOCOLATE CON PASAs", "CHOCOLATE DOLCE BAJON", "CHOCOLATE HAVANNA", "CHOCOLATE KINDER", "CHOCOLATE MARROC", "CHOCOLATE MARQUISE", "CHOCOLATE NUCCIOLATO", "CHOCOLATE NUTELLA", "CHOCOLATE ROCHER", "CHOCOLATE SUIZO", "BANANITA DOLCA", "BANANA SPLIT", "BANANA SPLIT CON NUEZ", "BANANA CON NUTELLA", "CREMA BON O BOM", "CADBURY DE FRUTILLA", "CEREZA A LA CREMA", "CHEESECAKE", "CREMA DE ARANDANOS", "CREMA DEL CIELO", "CREMA OREO", "CREMA RUSA", "FORNITE", "FRAMTTINO", "FRAMBUESA CON PISTACHO", "FRUTOS DEL BOSQUE", "GRANIZADo", "KINOTOS AL WHISKY", "MANTECOL", "MASCARPONE CON FRUTOS ROJOS", "MENTA GRANIZADA", "PISTACHO", "TIRAMISU", "FRAMBUESA AL AGUA", "SAMBAYON ITALIANO", "MOUSSE DE LIMON HAVANNA", "FRAMBUESA A LA CREMA", "NONA VICENTA", "Açaí", "SCALONETA"];
-const listaMilkshakes = ["Oreo", "Bon o bon", "Chocolate dubai", "Pistacho", "Ferrero rocher", "Frapuchino americana", "Frapuccino dulce de leche", "Dolce valentino", "Dulce de leche", "Belga furioso", "Chocolinas", "Creza silvestre"];
-const listaSalsas = ["Chocolate", "Frutilla", "Frutos Patagónicos", "Dulce de Leche", "Caramelo"];
-const opcionesDubai = ["Amargo", "Amargo con sal"];
-const opcionesGrajeas = ["Naranja con chocolate semiamargo", "Avellanas con chocolate caramelizado"];
-const listaVariedadesCafe = ["Capuccino", "Latte", "Flat white", "Cortado", "Espresso simple", "Espresso doble", "Americano simple", "Americano doble"];
-const listaLeches = ["Entera", "Deslactosada", "Vegetal (Almendras)"];
 
 let carrito = JSON.parse(localStorage.getItem('carrito')) || [];
 
-// --- 2. RENDERIZADO CON BOTONES + / - ---
+// --- 2. FUNCIONES PRINCIPALES ---
 function renderizarCarrito() {
   const container = document.getElementById('cart-items');
   const totalContainer = document.getElementById('cart-total');
   if (!container) return;
 
+  if (carrito.length === 0) {
+    container.innerHTML = '<p>Tu carrito está vacío.</p>';
+    if (totalContainer) totalContainer.innerText = '0';
+    return;
+  }
+
   let html = '';
   let totalGeneral = 0;
 
   carrito.forEach((p, index) => {
-    let precioExtra = (p.extras ? (parseInt(p.extras.avellanas) || 0) + (parseInt(p.extras.coco) || 0) : 0);
-    let precioTotalItem = (p.precioBase + precioExtra) * p.cantidad;
-    totalGeneral += precioTotalItem;
-
+    totalGeneral += p.precioBase * p.cantidad;
     html += `
-      <div class="cart-item" style="border-bottom: 1px solid #eee; padding: 10px 0;">
-        <div style="display:flex; justify-content:space-between; align-items:center;">
+      <div style="padding:10px; border-bottom:1px solid #ccc;">
+        <div style="display:flex; justify-content:space-between;">
           <span>${p.nombre} (x${p.cantidad})</span>
           <div>
             <button onclick="cambiarCantidad(${index}, -1)">-</button>
             <button onclick="cambiarCantidad(${index}, 1)">+</button>
           </div>
         </div>
-        <div style="font-size:12px; margin-top:5px;">
-          ${renderizarOpciones(p, index)}
-        </div>
       </div>`;
   });
   container.innerHTML = html;
-  if(totalContainer) totalContainer.innerText = totalGeneral.toLocaleString('es-AR');
-}
-
-// Función auxiliar para no ensuciar el render principal
-function renderizarOpciones(p, index) {
-  if (p.tipo === "helado") {
-    return Array.from({length: p.tope}).map((_, i) => `
-      <select onchange="guardarOpcionEspecial(${index}, 'gustos', this.value, ${i})" style="width:100%; margin-bottom:2px;">
-        <option value="">Gusto ${i+1}</option>
-        ${listaSaboresHelados.map(s => `<option value="${s}" ${p.gustos[i] === s ? 'selected':''}>${s}</option>`).join('')}
-      </select>`).join('');
-  }
-  // Si no es helado, devuelve vacío (limpio)
-  return ""; 
-}
-
-// --- 3. FUNCIONES DE LÓGICA ---
-function cambiarCantidad(index, delta) {
-  carrito[index].cantidad = (carrito[index].cantidad || 1) + delta;
-  if (carrito[index].cantidad <= 0) carrito.splice(index, 1);
-  localStorage.setItem('carrito', JSON.stringify(carrito));
-  renderizarCarrito();
-  actualizarContador();
+  if (totalContainer) totalContainer.innerText = totalGeneral.toLocaleString('es-AR');
 }
 
 function agregarAlCarrito(nombre, precio) {
   let tipo = "otro";
   let tope = 0;
-  // Tu lógica de clasificación que ya tenías...
   if (nombre.includes("1 Kg")) { tipo = "helado"; tope = 4; }
   else if (nombre.includes("1/2 Kg")) { tipo = "helado"; tope = 3; }
   else if (nombre.includes("1/4 Kg")) { tipo = "helado"; tope = 2; }
   else if (nombre.includes("Promo Especial 2x1")) { tipo = "helado"; tope = 4; }
-  
+
   carrito.push({ nombre, precioBase: parseFloat(precio), tipo, tope, cantidad: 1, gustos: Array(tope).fill("") });
-  localStorage.setItem('carrito', JSON.stringify(carrito));
-  actualizarContador();
-  renderizarCarrito();
+  guardarYRenderizar();
 }
 
-// ... (El resto de tus funciones: guardarOpcionEspecial, procesarPago, etc. las mantenés igual)
-  }
-
-
-
-  function guardarOpcionEspecial(indexProducto, propiedad, valor, subIndex = null) {
-
-    if (subIndex !== null) {
-
-      carrito[indexProducto][propiedad][subIndex] = valor;
-
-    } else {
-
-      carrito[indexProducto][propiedad] = valor;
-
-    }
-
-    localStorage.setItem('carrito', JSON.stringify(carrito));
-
-  }
-
-
-
-  function guardarExtraLorenzo(indexProducto, ingrediente, valor) {
-
-    if (parseInt(valor) < 0) valor = 0;
-
-    if (parseInt(valor) > 100) valor = 100;
-
-    carrito[indexProducto].extras[ingrediente] = parseInt(valor) || 0;
-
-    localStorage.setItem('carrito', JSON.stringify(carrito));
-
-    renderizarCarrito();
-
-  }
-
-
-
-  function eliminarDelCarrito(index) {
-
-    carrito.splice(index, 1);
-
-    localStorage.setItem('carrito', JSON.stringify(carrito));
-
-    actualizarContador();
-
-    renderizarCarrito();
-
-  }
-
-
-
-  function actualizarContador() {
-
-    const contador = document.getElementById('cart-count');
-
-    if (contador) contador.innerText = carrito.length;
-
-  }
-
-
-
-  window.addEventListener('DOMContentLoaded', () => {
-
-    actualizarContador();
-
-    renderizarCarrito();
-
-  });
-
-
-
-  function toggleCart() {
-
-    const modal = document.getElementById('cart-modal');
-
-    modal.classList.toggle('hidden');
-
-    if (!modal.classList.contains('hidden')) renderizarCarrito();
-
-  }
-
-
-
-  function toggleDireccion() {
-
-    const campoDireccion = document.getElementById('campo-direccion');
-
-    const opcionDelivery = document.querySelector('input[name="tipo-entrega"][value="delivery"]').checked;
-
-    if (opcionDelivery) campoDireccion.classList.remove('hidden');
-
-    else campoDireccion.classList.add('hidden');
-
-  }
-
-
-
-  // 4. PASO FINAL: ENVIAR TODO ORDENADO A WHATSAPP
-
-  function procesarPago() {
-
-    const nombre = document.getElementById('cliente-nombre').value.trim();
-
-    const apellido = document.getElementById('cliente-apellido').value.trim();
-
-    const telefono = document.getElementById('cliente-telefono').value.trim();
-
-    const tipoEntrega = document.querySelector('input[name="tipo-entrega"]:checked').value;
-
-    const direccion = document.getElementById('cliente-direccion').value.trim();
-
-
-
-    if (!nombre || !apellido || !telefono) {
-
-      alert("Por favor, completa tus datos de contacto (Nombre, Apellido y Teléfono).");
-
-      return;
-
-    }
-
-    if (tipoEntrega === "delivery" && !direccion) {
-
-      alert("Por favor, ingresa tu dirección para el envío a domicilio.");
-
-      return;
-
-    }
-
-    if (carrito.length === 0) {
-
-      alert("El carrito está vacío.");
-
-      return;
-
-    }
-
-
-
-    let mensaje = `🍦 *NUEVO PEDIDO - DOLCE TROPEA* 🍦\n\n`;
-
-    mensaje += `👤 *Cliente:* ${nombre} ${apellido}\n`;
-
-    mensaje += `📞 *Teléfono:* ${telefono}\n`;
-
-    mensaje += `🛵 *Entrega:* ${tipoEntrega === 'delivery' ? 'Envío a Domicilio' : 'Retiro en Local'}\n`;
-
-    if (tipoEntrega === 'delivery') mensaje += `📍 *Dirección:* ${direccion}\n`;
-
-    
-
-    mensaje += `\n🛒 *DETALLE DEL PEDIDO:*\n`;
-
-    let totalFactura = 0;
-
-
-
-    carrito.forEach((prod) => {
-
-      let extra = 0;
-
-      let detalleExtras = "";
-
-
-
-      if (prod.tipo === "helado" && prod.gustos) {
-
-        let gustosFiltrados = prod.gustos.filter(g => g !== "");
-
-        detalleExtras = `\n   · Gustos: ${gustosFiltrados.length > 0 ? gustosFiltrados.join(', ') : 'No seleccionados'}`;
-
-      } else if ((prod.tipo === "milkshake" || prod.tipo === "salsa" || prod.tipo === "grajeas") && prod.sabor) {
-
-        detalleExtras = `\n   · Variante: ${prod.sabor}`;
-
-      } else if (prod.tipo === "dubai" && prod.opciones) {
-
-        let opcionesFiltradas = prod.opciones.filter(o => o !== "");
-
-        detalleExtras = `\n   · Opciones: ${opcionesFiltradas.length > 0 ? opcionesFiltradas.join(', ') : 'No seleccionadas'}`;
-
-      } else if (prod.tipo === "lorenzo" && prod.extras) {
-
-        extra += prod.extras.avellanas * 1;
-
-        extra += prod.extras.coco * 1;
-
-        detalleExtras = `\n   · Extras: ${prod.extras.avellanas} Avellanas, ${prod.extras.coco} Coco en escamas`;
-
-      } else if (prod.tipo === "cafe") {
-
-        detalleExtras = `\n   · Estilo: ${prod.sabor || 'No seleccionado'}\n   · Leche: ${prod.leche || 'No seleccionada'}`;
-
-      } else if (prod.tipo === "chocolate-mamuschka") {
-
-        detalleExtras = `\n   · Leche: ${prod.leche || 'No seleccionada'}`;
-
-      }
-
-
-
-      let precioItem = prod.precioBase + extra;
-
-      totalFactura += precioItem;
-
-      mensaje += `• *${prod.nombre}* - $${precioItem.toLocaleString('es-AR')}${detalleExtras}\n`;
-
-    });
-
-
-
-    mensaje += `\n💰 *TOTAL A PAGAR:* $${totalFactura.toLocaleString('es-AR')}`;
-
-
-
-    // CONFIGURACIÓN DE TU WHATSAPP (Poné tu número real sin el + ni espacios)
-
-    const numeroCelular = "542971234567"; 
-
-    const urlWhatsapp = `https://api.whatsapp.com/send?phone=${numeroCelular}&text=${encodeURIComponent(mensaje)}`;
-
-    
-
-    // Vaciar carrito
-
-    localStorage.removeItem('carrito');
-
-    carrito = [];
-
-    actualizarContador();
-
-    renderizarCarrito();
-
-    toggleCart();
-
-
-
-    window.open(urlWhatsapp, '_blank');
-
-  }
-
-
+function cambiarCantidad(index, delta) {
+  carrito[index].cantidad += delta;
+  if (carrito[index].cantidad <= 0) carrito.splice(index, 1);
+  guardarYRenderizar();
+}
+
+function guardarYRenderizar() {
+  localStorage.setItem('carrito', JSON.stringify(carrito));
+  renderizarCarrito();
+  actualizarContador();
+}
+
+function actualizarContador() {
+  const contador = document.getElementById('cart-count');
+  if (contador) contador.innerText = carrito.length;
+}
+
+function toggleCart() {
+  const modal = document.getElementById('cart-modal');
+  if (modal) modal.classList.toggle('hidden');
+}
+
+// --- 3. INICIO ---
+window.addEventListener('DOMContentLoaded', () => {
+  actualizarContador();
+  renderizarCarrito();
+});
