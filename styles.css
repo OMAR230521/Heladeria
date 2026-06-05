@@ -1433,3 +1433,82 @@ button {
 [data-theme="dark"] .btn-card-whatsapp {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
+
+/* --- ESTILOS DEL CARRITO --- */
+.cart-floating-btn {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background-color: #25d366; /* Verde tipo WhatsApp/Compra */
+  color: white;
+  border: none;
+  border-radius: 50px;
+  padding: 15px 25px;
+  font-size: 18px;
+  font-weight: bold;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+  cursor: pointer;
+  z-index: 1000;
+  transition: transform 0.2s;
+}
+.cart-floating-btn:hover { transform: scale(1.05); }
+
+/* Fondo oscuro cuando se abre el carrito */
+.cart-modal-overlay {
+  position: fixed;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: rgba(0,0,0,0.5);
+  z-index: 2000;
+  display: flex;
+  justify-content: flex-end; /* Se abre desde la derecha */
+}
+
+/* Panel lateral del carrito */
+.cart-modal-content {
+  background: #fff;
+  width: 100%;
+  max-width: 400px;
+  height: 100%;
+  padding: 20px;
+  box-sizing: border-box;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.cart-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 2px solid #f0f0f0;
+  padding-bottom: 10px;
+}
+.close-cart { background: none; border: none; font-size: 20px; cursor: pointer; }
+
+/* Estilos del Formulario */
+.cart-form input[type="text"], 
+.cart-form input[type="tel"] {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  box-sizing: border-box;
+  font-family: inherit;
+}
+.form-row { display: flex; gap: 10px; }
+.delivery-options { display: flex; gap: 15px; margin-bottom: 10px; }
+
+.btn-checkout {
+  background-color: #ff477e; /* Un rosa premium tipo heladería */
+  color: white;
+  width: 100%;
+  padding: 15px;
+  border: none;
+  border-radius: 8px;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+}
+.hidden { display: none !important; }
