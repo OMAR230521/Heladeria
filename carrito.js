@@ -71,10 +71,6 @@ function guardarYRenderizar() {
 
 // --- 3. RENDERIZADO CORREGIDO ---
 
-// Definimos las opciones que faltan
-const variedadesCafe = ["Capuccino", "Latte", "Flat white", "Cortado", "Espresso simple", "Espresso doble", "Americano simple", "Americano doble"];
-const tiposLeche = ["Entera", "Descremada", "Almendra"];
-
 function renderizarCarrito() {
     const container = document.getElementById('cart-items');
     const totalContainer = document.getElementById('cart-total');
