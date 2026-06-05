@@ -435,39 +435,82 @@ function setupEventListeners() {
   }
 }
 
-// --- 1. DATOS ---
+// --- 1. BASES DE DATOS ---
 const listaSaboresHelados = ["MOUSSE DE CHOCOLATE", "MOUSSE DE FRAMBUESA", "MOUSSE DE LEMON PIE", "MOUSSE DE MARACUYA", "MOUSSE DE LIMON", "ANANA AL AGUA", "DURAZNO AL AGUA", "FRANUI AL AGUA", "FRUTILLA AL AGUA", "FRUTOS PATAGONICOS AL AGUA", "LIMON AL AGUA", "LIMON, JENGIBRE Y MENTA(AL AGUA)", "LIMON, JENGIBRE Y ALBAHACA(AL AGUA)", "DULCE DE LECHE BOMBON", "DULCE DE LECHE BROWNIE", "DULCE DE LECHE CLASICO", "CHOCOTORTA", "COCO CON DULCE DE LECHE", "DULCE DE LECHE CRUNCH", "FLAN CON DULCE DE LECHE", "DULCE DE LECHE GRANIZADO", "SUPER DULCE DE LECHE", "CHOCOLATE BLANCO", "CHOCOLATE BLOCK", "CHOCOLATE BUENARDO", "CHOCOLATE CLASICO", "CHOCOLATE CON ALMENDRAS", "CHOCOLATE CON PASAs", "CHOCOLATE DOLCE BAJON", "CHOCOLATE HAVANNA", "CHOCOLATE KINDER", "CHOCOLATE MARROC", "CHOCOLATE MARQUISE", "CHOCOLATE NUCCIOLATO", "CHOCOLATE NUTELLA", "CHOCOLATE ROCHER", "CHOCOLATE SUIZO", "BANANITA DOLCA", "BANANA SPLIT", "BANANA SPLIT CON NUEZ", "BANANA CON NUTELLA", "CREMA BON O BOM", "CADBURY DE FRUTILLA", "CEREZA A LA CREMA", "CHEESECAKE", "CREMA DE ARANDANOS", "CREMA DEL CIELO", "CREMA OREO", "CREMA RUSA", "FORNITE", "FRAMTTINO", "FRAMBUESA CON PISTACHO", "FRUTOS DEL BOSQUE", "GRANIZADo", "KINOTOS AL WHISKY", "MANTECOL", "MASCARPONE CON FRUTOS ROJOS", "MENTA GRANIZADA", "PISTACHO", "TIRAMISU", "FRAMBUESA AL AGUA", "SAMBAYON ITALIANO", "MOUSSE DE LIMON HAVANNA", "FRAMBUESA A LA CREMA", "NONA VICENTA", "Açaí", "SCALONETA"];
 
 let carrito = JSON.parse(localStorage.getItem('carrito')) || [];
 
-// --- 1. DATOS (Mantené tus listas aquí) ---
-// (Tu listaSaboresHelados, etc. se mantienen igual)
+// --- 2. FUNCIONES DE LÓGICA ---
+function agregarAlCarrito(nombre, precio) {
+    let tipo = "otro";
+    let tope = 0;
+    
+    if (nombre.includes("1 Kg") || nombre.includes("1/2 Kg") || nombre.includes("1/4 Kg") || nombre.includes("Promo 2x1")) {
+        tipo = "helado";
+        if (nombre.includes("1 Kg")) tope = 4;
+        else if (nombre.includes("1/2 Kg")) tope = 3;
+        else if (nombre.includes("1/4 Kg")) tope = 2;
+        else if (nombre.includes("Promo 2x1")) tope = 4;
+    }
 
-// --- 2. RENDERIZADO PROFESIONAL (CADA PRODUCTO SEPARADO) ---
+    let id = (tipo === "helado") ? Date.now() : nombre;
+    let productoExistente = carrito.find(item => item.id === id);
+
+    if (productoExistente) {
+        productoExistente.cantidad += 1;
+    } else {
+        carrito.push({ id, nombre, precioBase: parseFloat(precio), tipo, tope, cantidad: 1, gustos: Array(tope).fill("") });
+    }
+    guardarYRenderizar();
+}
+
+function cambiarCantidad(index, delta) {
+    carrito[index].cantidad += delta;
+    if (carrito[index].cantidad <= 0) carrito.splice(index, 1);
+    guardarYRenderizar();
+}
+
+function eliminarDelCarrito(index) {
+    carrito.splice(index, 1);
+    guardarYRenderizar();
+}
+
+function guardarGusto(prodIdx, gustoIdx, valor) {
+    carrito[prodIdx].gustos[gustoIdx] = valor;
+    localStorage.setItem('carrito', JSON.stringify(carrito));
+}
+
+function guardarYRenderizar() {
+    localStorage.setItem('carrito', JSON.stringify(carrito));
+    renderizarCarrito();
+    actualizarContador();
+}
+
+// --- 3. RENDERIZADO ---
 function renderizarCarrito() {
     const container = document.getElementById('cart-items');
     const totalContainer = document.getElementById('cart-total');
     if (!container) return;
 
-    if (carrito.length === 0) {
-        container.innerHTML = '<p style="padding:20px; text-align:center;">Tu carrito está vacío.</p>';
-        if (totalContainer) totalContainer.innerText = '0';
-        return;
-    }
-
     let html = '';
     let totalGeneral = 0;
 
     carrito.forEach((p, index) => {
-        // Como ahora cada producto es único, el precio es el base directamente
-        let precioItem = p.precioBase;
+        let precioItem = p.precioBase * p.cantidad;
         totalGeneral += precioItem;
 
         html += `
         <div style="padding:15px; border-bottom:1px solid #eee; background:#fff; margin-bottom: 5px; border-radius: 8px;">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-                <div style="font-weight:bold; font-size: 15px;">${p.nombre}</div>
-                <button onclick="eliminarDelCarrito(${index})" style="background:#ffccd8; border:none; border-radius:50%; width:25px; height:25px; cursor:pointer;">X</button>
+                <div style="font-weight:bold; font-size: 15px;">${p.nombre} ${p.tipo !== 'helado' ? `(x${p.cantidad})` : ''}</div>
+                <div style="display:flex; gap:5px;">
+                    ${p.tipo !== 'helado' ? `
+                        <button onclick="cambiarCantidad(${index}, -1)" style="border:1px solid #ff477e; border-radius:5px; width:30px; height:30px;">-</button>
+                        <button onclick="cambiarCantidad(${index}, 1)" style="border:1px solid #ff477e; border-radius:5px; width:30px; height:30px;">+</button>
+                    ` : `
+                        <button onclick="eliminarDelCarrito(${index})" style="background:#ffccd8; border:none; border-radius:50%; width:30px; height:30px;">X</button>
+                    `}
+                </div>
             </div>
             <div style="color:#ff477e; font-weight:bold; margin-bottom:10px;">$${precioItem.toLocaleString('es-AR')}</div>
             ${generarSelectores(p, index)}
@@ -478,10 +521,8 @@ function renderizarCarrito() {
     if (totalContainer) totalContainer.innerText = totalGeneral.toLocaleString('es-AR');
 }
 
-// --- 3. LÓGICA DE SELECCIÓN ---
 function generarSelectores(p, index) {
     if (p.tipo !== "helado") return "";
-    
     let selectores = `<div style="font-size:11px; color:#888; margin-bottom:5px;">SABORES (Elegí ${p.tope}):</div>`;
     for (let i = 0; i < p.tope; i++) {
         selectores += `
@@ -493,90 +534,12 @@ function generarSelectores(p, index) {
     return selectores;
 }
 
-// --- 4. FUNCIONES DE LÓGICA ---
-function agregarAlCarrito(nombre, precio) {
-    let tipo = "otro";
-    let tope = 0;
-    
-    // Clasificación
-    if (nombre.includes("1 Kg") || nombre.includes("1/2 Kg") || nombre.includes("1/4 Kg") || nombre.includes("Promo 2x1")) {
-        tipo = "helado";
-        if (nombre.includes("1 Kg")) tope = 4;
-        else if (nombre.includes("1/2 Kg")) tope = 3;
-        else if (nombre.includes("1/4 Kg")) tope = 2;
-        else if (nombre.includes("Promo 2x1")) tope = 4;
-    }
-
-    // LÓGICA DE AGRUPACIÓN:
-    // Si es helado, usamos un ID único (Date.now()) para que NUNCA se agrupen.
-    // Si NO es helado, usamos el nombre como ID para que SI se agrupen.
-    let id = (tipo === "helado") ? Date.now() : nombre;
-
-    let productoExistente = carrito.find(item => item.id === id);
-
-    if (productoExistente) {
-        productoExistente.cantidad += 1;
-    } else {
-        carrito.push({
-            id: id,
-            nombre: nombre,
-            precioBase: parseFloat(precio),
-            tipo: tipo,
-            tope: tope,
-            cantidad: 1,
-            gustos: Array(tope).fill("")
-        });
-    }
-    guardarYRenderizar();
-}
-
-// En el RENDERIZADO, ajustamos para mostrar botones solo si NO es helado:
-function renderizarCarrito() {
-    // ... (parte inicial igual)
-    carrito.forEach((p, index) => {
-        let precioItem = p.precioBase * p.cantidad;
-        totalGeneral += precioItem;
-
-        html += `
-        <div style="padding:15px; border-bottom:1px solid #eee; background:#fff; margin-bottom: 5px; border-radius: 8px;">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-                <div style="font-weight:bold; font-size: 15px;">
-                    ${p.nombre} ${p.tipo !== 'helado' ? `(x${p.cantidad})` : ''}
-                </div>
-                <div style="display:flex; gap:5px;">
-                    ${p.tipo !== 'helado' ? `
-                        <button onclick="cambiarCantidad(${index}, -1)" style="border:1px solid #ff477e; border-radius:5px; width:25px;">-</button>
-                        <button onclick="cambiarCantidad(${index}, 1)" style="border:1px solid #ff477e; border-radius:5px; width:25px;">+</button>
-                    ` : `
-                        <button onclick="eliminarDelCarrito(${index})" style="background:#ffccd8; border:none; border-radius:50%; width:25px; height:25px;">X</button>
-                    `}
-                </div>
-            </div>
-            <div style="color:#ff477e; font-weight:bold; margin-bottom:10px;">$${precioItem.toLocaleString('es-AR')}</div>
-            ${generarSelectores(p, index)}
-        </div>`;
-    });
-    // ...
-}
-
-function cambiarCantidad(index, delta) {
-    carrito[index].cantidad += delta;
-    if (carrito[index].cantidad <= 0) carrito.splice(index, 1);
-    guardarYRenderizar();
-}
-// ... (Mantené el resto de tus funciones como toggleCart, procesarPago, etc.)
 function actualizarContador() {
-  const contador = document.getElementById('cart-count');
-  if (contador) contador.innerText = carrito.length;
+    const contador = document.getElementById('cart-count');
+    if (contador) contador.innerText = carrito.length;
 }
 
-function toggleCart() {
-  const modal = document.getElementById('cart-modal');
-  if (modal) modal.classList.toggle('hidden');
-}
-
-// --- 3. INICIO ---
 window.addEventListener('DOMContentLoaded', () => {
-  actualizarContador();
-  renderizarCarrito();
+    actualizarContador();
+    renderizarCarrito();
 });
