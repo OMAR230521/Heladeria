@@ -483,6 +483,7 @@ function agregarAlCarrito(nombre, precio) {
     guardarYRenderizar();
 }
 
+// --- 2. FUNCIONES DE APOYO ---
 function cambiarCantidad(index, delta) {
     carrito[index].cantidad += delta;
     if (carrito[index].cantidad <= 0) carrito.splice(index, 1);
@@ -494,8 +495,8 @@ function eliminarDelCarrito(index) {
     guardarYRenderizar();
 }
 
-function guardarGusto(prodIdx, gustoIdx, valor) {
-    carrito[prodIdx].gustos[gustoIdx] = valor;
+function actualizarExtra(index, campo, valor) {
+    carrito[index][campo] = valor;
     localStorage.setItem('carrito', JSON.stringify(carrito));
 }
 
