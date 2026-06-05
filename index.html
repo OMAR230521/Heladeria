@@ -451,43 +451,7 @@
 </div>
 
 <!-- CEREBRO CON SUPER MEMORIA (LOCALSTORAGE) -->
-<script>
-  // 1. BASES DE DATOS (COMPLETO)
-  const listaSaboresHelados = ["MOUSSE DE CHOCOLATE", "MOUSSE DE FRAMBUESA", "MOUSSE DE LEMON PIE", "MOUSSE DE MARACUYA", "MOUSSE DE LIMON", "ANANA AL AGUA", "DURAZNO AL AGUA", "FRANUI AL AGUA", "FRUTILLA AL AGUA", "FRUTOS PATAGONICOS AL AGUA", "LIMON AL AGUA", "LIMON, JENGIBRE Y MENTA(AL AGUA)", "LIMON, JENGIBRE Y ALBAHACA(AL AGUA)", "DULCE DE LECHE BOMBON", "DULCE DE LECHE BROWNIE", "DULCE DE LECHE CLASICO", "CHOCOTORTA", "COCO CON DULCE DE LECHE", "DULCE DE LECHE CRUNCH", "FLAN CON DULCE DE LECHE", "DULCE DE LECHE GRANIZADO", "SUPER DULCE DE LECHE", "CHOCOLATE BLANCO", "CHOCOLATE BLOCK", "CHOCOLATE BUENARDO", "CHOCOLATE CLASICO", "CHOCOLATE CON ALMENDRAS", "CHOCOLATE CON PASAs", "CHOCOLATE DOLCE BAJON", "CHOCOLATE HAVANNA", "CHOCOLATE KINDER", "CHOCOLATE MARROC", "CHOCOLATE MARQUISE", "CHOCOLATE NUCCIOLATO", "CHOCOLATE NUTELLA", "CHOCOLATE ROCHER", "CHOCOLATE SUIZO", "BANANITA DOLCA", "BANANA SPLIT", "BANANA SPLIT CON NUEZ", "BANANA CON NUTELLA", "CREMA BON O BOM", "CADBURY DE FRUTILLA", "CEREZA A LA CREMA", "CHEESECAKE", "CREMA DE ARANDANOS", "CREMA DEL CIELO", "CREMA OREO", "CREMA RUSA", "FORNITE", "FRAMTTINO", "FRAMBUESA CON PISTACHO", "FRUTOS DEL BOSQUE", "GRANIZADo", "KINOTOS AL WHISKY", "MANTECOL", "MASCARPONE CON FRUTOS ROJOS", "MENTA GRANIZADA", "PISTACHO", "TIRAMISU", "FRAMBUESA AL AGUA", "SAMBAYON ITALIANO", "MOUSSE DE LIMON HAVANNA", "FRAMBUESA A LA CREMA", "NONA VICENTA", "Açaí", "SCALONETA"];
-  const listaVariedadesCafe = ["Capuccino", "Latte", "Flat white", "Cortado", "Espresso simple", "Espresso doble", "Americano simple", "Americano doble"];
-  const listaLeches = ["Entera", "Deslactosada", "Vegetal (Almendras)"];
-  let carrito = JSON.parse(localStorage.getItem('carrito')) || [];
-
-  // 2. LÓGICA DE AGREGADO
-  function agregarAlCarrito(nombre, precio) {
-    let tipo = nombre.toLowerCase().includes("1/4") || nombre.toLowerCase().includes("1/2") || nombre.toLowerCase().includes("1 kg") || nombre.toLowerCase().includes("promo") ? "helado" : "simple";
-    let tope = nombre.includes("1/4") ? 2 : nombre.includes("1/2") ? 3 : nombre.includes("1 kg") ? 4 : nombre.includes("Promo") ? 4 : 0;
-    
-    let nuevoItem = { nombre, precioBase: parseFloat(precio), tipo, tope };
-    if (tipo === "helado") nuevoItem.gustos = Array(tope).fill("");
-    
-    carrito.push(nuevoItem);
-    localStorage.setItem('carrito', JSON.stringify(carrito));
-    renderizarCarrito();
-  }
-
-  // 3. RENDERIZADO LIMPIO
-  function renderizarCarrito() {
-    const container = document.getElementById('cart-items');
-    let html = '';
-    carrito.forEach((p, i) => {
-      html += `<div style="border-bottom:1px solid #eee; padding:10px;">
-        <div style="display:flex; justify-content:space-between;">
-          <span>${p.nombre}</span>
-          <button onclick="carrito.splice(${i},1); localStorage.setItem('carrito', JSON.stringify(carrito)); renderizarCarrito();">❌</button>
-        </div>
-        ${p.tipo === "helado" ? p.gustos.map((g, idx) => `<select onchange="carrito[${i}].gustos[${idx}]=this.value; localStorage.setItem('carrito', JSON.stringify(carrito))" style="width:100%;"><option value="">Gusto ${idx+1}</option>${listaSaboresHelados.map(s => `<option value="${s}" ${g===s?'selected':''}>${s}</option>`).join('')}</select>`).join('') : ''}
-      </div>`;
-    });
-    container.innerHTML = html;
-  }
-  window.addEventListener('DOMContentLoaded', renderizarCarrito);
-</script>
+<script src="app.js"></script>
   
 </body>
 </html>
