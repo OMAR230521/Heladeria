@@ -539,6 +539,7 @@ function toggleCart() {
     if (modal) {
         modal.classList.toggle('hidden');
     }
+}
 
 function actualizarContador() {
     const contador = document.getElementById('cart-count');
