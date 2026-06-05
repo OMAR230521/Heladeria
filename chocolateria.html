@@ -267,5 +267,111 @@
 
   <!-- Scripts -->
   <script src="app.js"></script>
+
+  <!-- Botón Flotante del Carrito -->
+<button id="btn-flotante-carrito" class="cart-floating-btn" onclick="toggleCart()">
+  🛒 <span id="cart-count">0</span>
+</button>
+
+<!-- Ventana del Carrito y Formulario (Oculta por defecto) -->
+<div id="cart-modal" class="cart-modal-overlay hidden">
+  <div class="cart-modal-content">
+    
+    <div class="cart-header">
+      <h2>Tu Pedido</h2>
+      <button class="close-cart" onclick="toggleCart()">❌</button>
+    </div>
+
+    <!-- Acá se van a inyectar los helados que elija -->
+    <div id="cart-items" class="cart-items-container">
+      <p class="empty-cart-msg">Tu carrito está vacío.</p>
+    </div>
+
+    <!-- Formulario de Datos -->
+    <div class="cart-form">
+      <h3>Datos del Cliente</h3>
+      <div class="form-row">
+        <input type="text" id="cliente-nombre" placeholder="Nombre" required>
+        <input type="text" id="cliente-apellido" placeholder="Apellido" required>
+      </div>
+      <input type="tel" id="cliente-telefono" placeholder="Número de Teléfono" required>
+      
+      <h3>Opciones de Entrega</h3>
+      <div class="delivery-options">
+        <label>
+          <input type="radio" name="tipo-entrega" value="retiro" onclick="toggleDireccion()" checked>
+          Retiro en Local
+        </label>
+        <label>
+          <input type="radio" name="tipo-entrega" value="delivery" onclick="toggleDireccion()">
+          Envío a Domicilio
+        </label>
+      </div>
+
+      <!-- Campo de dirección (se muestra solo si elige delivery) -->
+      <div id="campo-direccion" class="hidden">
+        <input type="text" id="cliente-direccion" placeholder="Ej: Av. Alsina 420, Piso 2B">
+      </div>
+    </div>
+
+    <div class="cart-footer">
+      <h3>Total: $<span id="cart-total">0</span></h3>
+      <button id="btn-pagar" class="btn-checkout" onclick="procesarPago()">Ir a Pagar</button>
+    </div>
+
+  </div>
+</div>
+
+<!-- CEREBRO CON SUPER MEMORIA (LOCALSTORAGE) -->
+<script>
+  // 1. Intenta leer el carrito guardado en el navegador. Si no hay nada, arranca vacío []
+  let carrito = JSON.parse(localStorage.getItem('carrito')) || [];
+
+  // 2. Función que actualiza el número flotante apenas entrás a cualquier página
+  function actualizarContador() {
+    const contador = document.getElementById('cart-count');
+    if (contador) {
+      contador.innerText = carrito.length;
+    }
+  }
+
+  // Esto hace que el navegador recuerde el número apenas se abre la pantalla
+  window.addEventListener('DOMContentLoaded', actualizarContador);
+
+  // 3. Función para abrir y cerrar con el deslizamiento suave
+  function toggleCart() {
+    const modal = document.getElementById('cart-modal');
+    modal.classList.toggle('hidden');
+  }
+
+  // 4. Función para mostrar la dirección si eligen Delivery
+  function toggleDireccion() {
+    const campoDireccion = document.getElementById('campo-direccion');
+    const opcionDelivery = document.querySelector('input[name="tipo-entrega"][value="delivery"]').checked;
+    
+    if (opcionDelivery) {
+      campoDireccion.classList.remove('hidden');
+    } else {
+      campoDireccion.classList.add('hidden');
+    }
+  }
+
+  // 5. Función para agregar productos y guardarlos en el bolsillo del navegador
+  function agregarAlCarrito(nombre, precio) {
+    // Guarda el producto en la lista
+    carrito.push({ nombre: nombre, precio: parseFloat(precio) });
+    
+    // Guarda la lista en el almacenamiento local para que no se borre al cambiar de página
+    localStorage.setItem('carrito', JSON.stringify(carrito));
+    
+    // Actualiza el contador verde
+    actualizarContador();
+    
+    // Abre el carrito automáticamente con el efecto pro deslizante
+    const modal = document.getElementById('cart-modal');
+    modal.classList.remove('hidden');
+  }
+</script>
+  
 </body>
 </html>
