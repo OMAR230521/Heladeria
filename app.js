@@ -443,7 +443,7 @@ let carrito = JSON.parse(localStorage.getItem('carrito')) || [];
 // --- 1. DATOS (Mantené tus listas aquí) ---
 // (Tu listaSaboresHelados, etc. se mantienen igual)
 
-// --- 2. RENDERIZADO PROFESIONAL ---
+// --- 2. RENDERIZADO PROFESIONAL (CADA PRODUCTO SEPARADO) ---
 function renderizarCarrito() {
     const container = document.getElementById('cart-items');
     const totalContainer = document.getElementById('cart-total');
@@ -459,18 +459,15 @@ function renderizarCarrito() {
     let totalGeneral = 0;
 
     carrito.forEach((p, index) => {
-        let precioItem = p.precioBase * p.cantidad;
+        // Como ahora cada producto es único, el precio es el base directamente
+        let precioItem = p.precioBase;
         totalGeneral += precioItem;
 
         html += `
-        <div style="padding:15px; border-bottom:1px solid #eee; background:#fff;">
+        <div style="padding:15px; border-bottom:1px solid #eee; background:#fff; margin-bottom: 5px; border-radius: 8px;">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-                <div style="font-weight:bold;">${p.nombre}</div>
-                <div style="display:flex; align-items:center; gap:10px;">
-                    <button onclick="cambiarCantidad(${index}, -1)" style="padding:5px 15px; font-size:18px;">-</button>
-                    <span>${p.cantidad}</span>
-                    <button onclick="cambiarCantidad(${index}, 1)" style="padding:5px 15px; font-size:18px;">+</button>
-                </div>
+                <div style="font-weight:bold; font-size: 15px;">${p.nombre}</div>
+                <button onclick="eliminarDelCarrito(${index})" style="background:#ffccd8; border:none; border-radius:50%; width:25px; height:25px; cursor:pointer;">X</button>
             </div>
             <div style="color:#ff477e; font-weight:bold; margin-bottom:10px;">$${precioItem.toLocaleString('es-AR')}</div>
             ${generarSelectores(p, index)}
@@ -481,41 +478,38 @@ function renderizarCarrito() {
     if (totalContainer) totalContainer.innerText = totalGeneral.toLocaleString('es-AR');
 }
 
-// --- 3. LOGICA PARA SELECTORES ---
+// --- 3. LÓGICA DE SELECCIÓN ---
 function generarSelectores(p, index) {
-    // Si no es helado, no mostramos nada extra
     if (p.tipo !== "helado") return "";
     
-    // Si es helado, generamos los selectores según el tope
-    let selectores = `<div style="font-size:12px; margin-bottom:5px;">SABORES (MÁX ${p.tope}):</div>`;
+    let selectores = `<div style="font-size:11px; color:#888; margin-bottom:5px;">SABORES (Elegí ${p.tope}):</div>`;
     for (let i = 0; i < p.tope; i++) {
         selectores += `
-        <select onchange="guardarGusto(${index}, ${i}, this.value)" style="width:100%; padding:8px; margin-bottom:5px; border:1px solid #ffccd8; border-radius:5px;">
-            <option value="">Elegir Gusto ${i + 1}</option>
+        <select onchange="guardarGusto(${index}, ${i}, this.value)" style="width:100%; padding:8px; margin-bottom:5px; border:1px solid #ffccd8; border-radius:8px; background:#fff;">
+            <option value="">Gusto ${i + 1}</option>
             ${listaSaboresHelados.map(s => `<option value="${s}" ${p.gustos[i] === s ? 'selected' : ''}>${s}</option>`).join('')}
         </select>`;
     }
     return selectores;
 }
 
-// --- 4. FUNCIONES DE LÓGICA ---
+// --- 4. FUNCIONES DE LÓGICA (MODIFICADAS) ---
 function agregarAlCarrito(nombre, precio) {
     let tipo = "otro";
     let tope = 0;
     
-    // Lógica inteligente
     if (nombre.includes("1 Kg")) { tipo = "helado"; tope = 4; }
     else if (nombre.includes("1/2 Kg")) { tipo = "helado"; tope = 3; }
     else if (nombre.includes("1/4 Kg")) { tipo = "helado"; tope = 2; }
     else if (nombre.includes("Promo 2x1")) { tipo = "helado"; tope = 4; }
 
-    carrito.push({ nombre, precioBase: parseFloat(precio), tipo, tope, cantidad: 1, gustos: Array(tope).fill("") });
+    // Al pushear un objeto nuevo, el carrito crece en tamaño y se muestra cada uno por separado
+    carrito.push({ nombre, precioBase: parseFloat(precio), tipo, tope, gustos: Array(tope).fill("") });
     guardarYRenderizar();
 }
 
-function cambiarCantidad(index, delta) {
-    carrito[index].cantidad += delta;
-    if (carrito[index].cantidad <= 0) carrito.splice(index, 1);
+function eliminarDelCarrito(index) {
+    carrito.splice(index, 1);
     guardarYRenderizar();
 }
 
@@ -529,7 +523,6 @@ function guardarYRenderizar() {
     renderizarCarrito();
     actualizarContador();
 }
-
 // ... (Mantené el resto de tus funciones como toggleCart, procesarPago, etc.)
 function actualizarContador() {
   const contador = document.getElementById('cart-count');
