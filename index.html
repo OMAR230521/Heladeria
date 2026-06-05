@@ -450,6 +450,26 @@
 
   </div>
 </div>
+
+  <script>
+  // Esta función abre y cierra el panel lateral del carrito
+  function toggleCart() {
+    const modal = document.getElementById('cart-modal');
+    modal.classList.toggle('hidden');
+  }
+
+  // Esta función muestra el renglón de la calle solo si eligen Delivery
+  function toggleDireccion() {
+    const campoDireccion = document.getElementById('campo-direccion');
+    const opcionDelivery = document.querySelector('input[name="tipo-entrega"][value="delivery"]').checked;
+    
+    if (opcionDelivery) {
+      campoDireccion.classList.remove('hidden');
+    } else {
+      campoDireccion.classList.add('hidden');
+    }
+  }
+</script>
   
 </body>
 </html>
