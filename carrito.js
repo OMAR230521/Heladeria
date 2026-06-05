@@ -9,46 +9,28 @@ window.agregarAlCarrito = function(nombre, precio) {
     let tipo = "otro";
     let tope = 0;
     
-    // Clasificación
+  // --- CLASIFICACIÓN ---
     if (nombre.includes("1 Kg") || nombre.includes("1/2 Kg") || nombre.includes("1/4 Kg") || nombre.includes("Promo 2x1")) {
         tipo = "helado";
         if (nombre.includes("1 Kg")) tope = 4;
         else if (nombre.includes("1/2 Kg")) tope = 3;
         else if (nombre.includes("1/4 Kg")) tope = 2;
         else if (nombre.includes("Promo 2x1")) tope = 4;
-        else if (nombre.toLowerCase().includes("batido de 3 bochas")) {
+    } 
+    
+    else if (nombre.toLowerCase().includes("batido de 3 bochas")) {
         tipo = "helado";
         tope = 3;
     } 
     else if (nombre.toLowerCase().includes("doble sabor") || nombre.toLowerCase().includes("milkshake")) {
         tipo = "helado";
         tope = 8; 
-    }
-    } else if (nombre.toLowerCase().includes("café")) {
+    } 
+    else if (nombre.toLowerCase().includes("café")) {
         tipo = "cafe";
-    } else if (nombre.toLowerCase().includes("mamuschka")) {
+    } 
+    else if (nombre.toLowerCase().includes("mamuschka")) {
         tipo = "chocolate";
-    }
-
-    // Aseguramos que el precio sea un número real
-    let precioNumerico = parseFloat(precio) || 0;
-
-    // LÓGICA DE AGRUPACIÓN:
-    let id = (tipo === "helado") ? Date.now() : nombre;
-    let productoExistente = carrito.find(item => item.id === id);
-
-    if (productoExistente) {
-        productoExistente.cantidad += 1;
-    } else {
-        carrito.push({
-            id: id,
-            nombre: nombre,
-            precioBase: precioNumerico,
-            tipo: tipo,
-            tope: tope,
-            cantidad: 1,
-            gustos: Array(tope).fill("")
-        });
     }
     guardarYRenderizar();
 }
