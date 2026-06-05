@@ -9,8 +9,8 @@ window.agregarAlCarrito = function(nombre, precio) {
     let tipo = "otro";
     let tope = 0;
     
-    // --- CLASIFICACIÓN ---
-    if (nombre.includes("1 Kg") || nombre.includes("1/2 Kg") || nombre.includes("1/4 Kg") || HTML: nombre.includes("Promo 2x1")) {
+    // --- CLASIFICACIÓN CORREGIDA (Sin el error de HTML:) ---
+    if (nombre.includes("1 Kg") || nombre.includes("1/2 Kg") || nombre.includes("1/4 Kg") || nombre.includes("Promo 2x1")) {
         tipo = "helado";
         if (nombre.includes("1 Kg")) tope = 4;
         else if (nombre.includes("1/2 Kg")) tope = 3;
@@ -19,15 +19,14 @@ window.agregarAlCarrito = function(nombre, precio) {
     } 
     else if (nombre.toLowerCase().includes("batido de 3 bochas")) {
         tipo = "helado";
-        tope = 3;
+        text: tope = 3;
     } 
     else if (nombre.toLowerCase().includes("doble sabor") || nombre.toLowerCase().includes("milkshake")) {
         tipo = "helado";
-        // Volvemos a setear los 8 sabores que me pediste para el Doble Sabor
         if (nombre.toLowerCase().includes("doble sabor")) {
             tope = 8; 
         } else {
-            tope = 2; // El milkshake queda en 2 o lo que necesites
+            tope = 2;
         }
     } 
     else if (nombre.toLowerCase().includes("café")) {
@@ -39,9 +38,7 @@ window.agregarAlCarrito = function(nombre, precio) {
 
     let precioNumerico = parseFloat(precio) || 0;
 
-    // LÓGICA DE AGRUPACIÓN ACTUALIZADA:
-    // Si es helado o el "doble sabor" de 8 gustos, NO los agrupamos por nombre. 
-    // Usamos Date.now() para que cada uno sea un ítem único con su propia lista de gustos.
+    // LÓGICA DE AGRUPACIÓN:
     let id = (tipo === "helado") ? Date.now() : nombre;
     let productoExistente = carrito.find(item => item.id === id);
 
@@ -97,7 +94,6 @@ function renderizarCarrito() {
         let precioItem = p.precioBase * p.cantidad;
         totalGeneral += precioItem;
 
-        // Si es helado normal va con "X", si son los batidos/promos va con +/-
         const usaBotonesMasMenos = p.tipo !== 'helado' || 
                                    p.nombre.toLowerCase().includes("batido") || 
                                    p.nombre.toLowerCase().includes("sabor") || 
@@ -130,8 +126,6 @@ function generarSelectores(p, index) {
 
     if (p.tipo === "helado") {
         selectores += `<div style="font-size:11px; color:#888; margin-bottom:5px;">SABORES (Elegí ${p.tope}):</div>`;
-        
-        // Creamos un contenedor scrolleable para que 8 selectores no ocupen toda la pantalla
         selectores += `<div style="max-height: 200px; overflow-y: auto; padding-right: 5px;">`;
         
         for (let i = 0; i < p.tope; i++) {
