@@ -438,10 +438,67 @@
 
 <!-- CEREBRO CON SUPER MEMORIA (LOCALSTORAGE) -->
 <script>
-  // 1. Intenta leer el carrito guardado en el navegador. Si no hay nada, arranca vacío []
+  // 1. Intentar leer el carrito guardado en el navegador
   let carrito = JSON.parse(localStorage.getItem('carrito')) || [];
 
-  // 2. Función que actualiza el número flotante apenas entrás a cualquier página
+  // 2. FUNCIÓN ACTUALIZADA: Agrupa los helados repetidos y les pone botones + y -
+  function renderizarCarrito() {
+    const cartItemsContainer = document.getElementById('cart-items');
+    const cartTotalContainer = document.getElementById('cart-total');
+    
+    if (!cartItemsContainer || !cartTotalContainer) return;
+
+    // Si el carrito está vacío
+    if (carrito.length === 0) {
+      cartItemsContainer.innerHTML = '<p class="empty-cart-msg">Tu carrito está vacío.</p>';
+      cartTotalContainer.innerText = '0';
+      return;
+    }
+
+    // ARMA EL GRUPO: Suma las cantidades de los productos que tengan el mismo nombre
+    let productosAgrupados = {};
+    carrito.forEach((item) => {
+      if (!productosAgrupados[item.nombre]) {
+        productosAgrupados[item.nombre] = {
+          nombre: item.nombre,
+          precio: item.precio,
+          cantidad: 0
+        };
+      }
+      productosAgrupados[item.nombre].cantidad++;
+    });
+
+    let html = '';
+    let total = 0;
+
+    // Recorremos los productos ya agrupados para dibujar las filas de la ventana
+    Object.values(productosAgrupados).forEach((producto) => {
+      let subtotal = producto.precio * producto.cantidad;
+      total += subtotal;
+      
+      html += `
+        <div class="cart-item" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; border-bottom: 1px solid #f0f0f0; padding-bottom: 8px;">
+          <div>
+            <span style="font-weight: 600; color: #333; font-size: 15px;">${producto.nombre}</span>
+            <div style="color: #ff477e; font-weight: bold; font-size: 13px; margin-top: 2px;">
+              ${producto.cantidad} x $${producto.precio.toLocaleString('es-AR')} = $${subtotal.toLocaleString('es-AR')}
+            </div>
+          </div>
+          
+          <div style="display: flex; gap: 6px; align-items: center;">
+            <button onclick="restarDelCarrito('${producto.nombre}')" style="background-color: #f0f0f0; border: none; width: 28px; height: 28px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 15px; display: flex; align-items: center; justify-content: center; color: #555;">-</button>
+            <button onclick="agregarAlCarrito('${producto.nombre}', ${producto.precio})" style="background-color: #f0f0f0; border: none; width: 28px; height: 28px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 15px; display: flex; align-items: center; justify-content: center; color: #555;">+</button>
+          </div>
+        </div>
+      `;
+    });
+
+    // Inyectamos la lista y el gran total calculado
+    cartItemsContainer.innerHTML = html;
+    cartTotalContainer.innerText = total.toLocaleString('es-AR');
+  }
+
+  // 3. Función que mantiene actualizado el número del botón flotante verde
   function actualizarContador() {
     const contador = document.getElementById('cart-count');
     if (contador) {
@@ -449,16 +506,23 @@
     }
   }
 
-  // Esto hace que el navegador recuerde el número apenas se abre la pantalla
-  window.addEventListener('DOMContentLoaded', actualizarContador);
+  // Se ejecuta de manera automática al abrir la web
+  window.addEventListener('DOMContentLoaded', () => {
+    actualizarContador();
+    renderizarCarrito();
+  });
 
-  // 3. Función para abrir y cerrar con el deslizamiento suave
+  // 4. Abrir y cerrar el panel lateral
   function toggleCart() {
     const modal = document.getElementById('cart-modal');
     modal.classList.toggle('hidden');
+    
+    if (!modal.classList.contains('hidden')) {
+      renderizarCarrito();
+    }
   }
 
-  // 4. Función para mostrar la dirección si eligen Delivery
+  // 5. Mostrar campo de dirección para Delivery
   function toggleDireccion() {
     const campoDireccion = document.getElementById('campo-direccion');
     const opcionDelivery = document.querySelector('input[name="tipo-entrega"][value="delivery"]').checked;
@@ -470,20 +534,27 @@
     }
   }
 
-  // 5. Función para agregar productos y guardarlos en el bolsillo del navegador
+  // 6. AGREGAR AL CARRITO (¡También sirve para el botón + del modal!)
   function agregarAlCarrito(nombre, precio) {
-    // Guarda el producto en la lista
     carrito.push({ nombre: nombre, precio: parseFloat(precio) });
-    
-    // Guarda la lista en el almacenamiento local para que no se borre al cambiar de página
     localStorage.setItem('carrito', JSON.stringify(carrito));
     
-    // Actualiza el contador verde
     actualizarContador();
+    renderizarCarrito();
+  }
+
+  // 7. FUNCIÓN NUEVA: Restar 1 unidad de un producto (Si llega a 0, se elimina solo)
+  function restarDelCarrito(nombre) {
+    // Busca la primera coincidencia de ese helado en la lista
+    const index = carrito.findIndex(item => item.nombre === nombre);
     
-    // Abre el carrito automáticamente con el efecto pro deslizante
-    const modal = document.getElementById('cart-modal');
-    modal.classList.remove('hidden');
+    if (index !== -1) {
+      carrito.splice(index, 1); // Borra un solo elemento
+      localStorage.setItem('carrito', JSON.stringify(carrito)); // Guarda la lista más corta
+      
+      actualizarContador();
+      renderizarCarrito();
+    }
   }
 </script>
   
