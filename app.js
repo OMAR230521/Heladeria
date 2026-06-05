@@ -534,6 +534,12 @@ function generarSelectores(p, index) {
     return selectores;
 }
 
+function toggleCart() {
+    const modal = document.getElementById('cart-modal');
+    if (modal) {
+        modal.classList.toggle('hidden');
+    }
+
 function actualizarContador() {
     const contador = document.getElementById('cart-count');
     if (contador) contador.innerText = carrito.length;
