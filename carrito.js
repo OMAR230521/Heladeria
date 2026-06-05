@@ -158,6 +158,11 @@ function actualizarContador() {
     if (contador) contador.innerText = carrito.length;
 }
 
+window.guardarGusto = function(index, gustoIndex, valor) {
+    carrito[index].gustos[gustoIndex] = valor;
+    localStorage.setItem('carrito', JSON.stringify(carrito));
+};
+
 window.addEventListener('DOMContentLoaded', () => {
     actualizarContador();
     renderizarCarrito();
