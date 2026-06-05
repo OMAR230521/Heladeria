@@ -1439,7 +1439,7 @@ button {
   position: fixed;
   bottom: 20px;
   right: 20px;
-  background-color: #25d366; /* Verde tipo WhatsApp/Compra */
+  background-color: #25d366; 
   color: white;
   border: none;
   border-radius: 50px;
@@ -1453,28 +1453,48 @@ button {
 }
 .cart-floating-btn:hover { transform: scale(1.05); }
 
-/* Fondo oscuro cuando se abre el carrito */
+/* Fondo oscuro con aparición suave */
 .cart-modal-overlay {
   position: fixed;
   top: 0; left: 0; width: 100%; height: 100%;
   background: rgba(0,0,0,0.5);
   z-index: 2000;
   display: flex;
-  justify-content: flex-end; /* Se abre desde la derecha */
+  justify-content: flex-end;
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 0.3s ease; /* Aparece suavemente */
 }
 
-/* Panel lateral del carrito */
+/* Cuando está oculto */
+.cart-modal-overlay.hidden {
+  opacity: 0;
+  visibility: hidden;
+}
+
+/* Panel lateral flotante, redondeado y deslizante */
 .cart-modal-content {
   background: #fff;
   width: 100%;
   max-width: 400px;
-  height: 100%;
+  height: 96vh; /* Casi todo el alto de la pantalla */
+  margin: 2vh 15px; /* Lo despega de los bordes para mostrar las curvas */
+  border-radius: 20px; /* Todas las esquinas bien redondeadas */
   padding: 20px;
   box-sizing: border-box;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
   gap: 15px;
+  
+  /* EFECTO DESLIZANTE SÚPER FLUIDO */
+  transform: translateX(0);
+  transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+/* Cuando se esconde, se desliza hacia la derecha y afuera */
+.cart-modal-overlay.hidden .cart-modal-content {
+  transform: translateX(120%);
 }
 
 .cart-header {
@@ -1501,7 +1521,7 @@ button {
 .delivery-options { display: flex; gap: 15px; margin-bottom: 10px; }
 
 .btn-checkout {
-  background-color: #ff477e; /* Un rosa premium tipo heladería */
+  background-color: #ff477e; 
   color: white;
   width: 100%;
   padding: 15px;
