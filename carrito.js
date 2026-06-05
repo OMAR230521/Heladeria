@@ -4,8 +4,8 @@ const tiposLeche = ["Entera", "Descremada", "Almendra"];
 const variedadesCafe = ["Capuccino", "Latte", "Flat white", "Cortado", "Espresso simple", "Espresso doble", "Americano simple", "Americano doble"];
 let carrito = JSON.parse(localStorage.getItem('carrito')) || [];
 
-// --- 2. FUNCIONES DE LÓGICA ---
-function agregarAlCarrito(nombre, precio) {
+// --- 2. FUNCIONES DE LÓGICA (GLOBALES) ---
+window.agregarAlCarrito = function(nombre, precio) {
     let tipo = "otro";
     let tope = 0;
     
@@ -16,7 +16,7 @@ function agregarAlCarrito(nombre, precio) {
         else if (nombre.includes("1/2 Kg")) tope = 3;
         else if (nombre.includes("1/4 Kg")) tope = 2;
         else if (nombre.includes("Promo 2x1")) tope = 4;
-    }   else if (nombre.toLowerCase().includes("café")) {
+    } else if (nombre.toLowerCase().includes("café")) {
         tipo = "cafe";
     } else if (nombre.toLowerCase().includes("mamuschka")) {
         tipo = "chocolate";
@@ -26,7 +26,6 @@ function agregarAlCarrito(nombre, precio) {
     let precioNumerico = parseFloat(precio) || 0;
 
     // LÓGICA DE AGRUPACIÓN:
-    // Si es helado, ID único (no se agrupan). Si es "otro", ID es el nombre (se agrupan).
     let id = (tipo === "helado") ? Date.now() : nombre;
     let productoExistente = carrito.find(item => item.id === id);
 
@@ -36,29 +35,29 @@ function agregarAlCarrito(nombre, precio) {
         carrito.push({
             id: id,
             nombre: nombre,
-            precioBase: precioNumerico, // Aquí nos aseguramos de guardar el precio
+            precioBase: precioNumerico,
             tipo: tipo,
             tope: tope,
-            cantidad: 1, // Definimos cantidad inicial siempre
+            cantidad: 1,
             gustos: Array(tope).fill("")
         });
     }
     guardarYRenderizar();
 }
 
-// --- 2. FUNCIONES DE APOYO ---
-function cambiarCantidad(index, delta) {
+// --- 3. FUNCIONES DE APOYO (GLOBALES) ---
+window.cambiarCantidad = function(index, delta) {
     carrito[index].cantidad += delta;
     if (carrito[index].cantidad <= 0) carrito.splice(index, 1);
     guardarYRenderizar();
 }
 
-function eliminarDelCarrito(index) {
+window.eliminarDelCarrito = function(index) {
     carrito.splice(index, 1);
     guardarYRenderizar();
 }
 
-function actualizarExtra(index, campo, valor) {
+window.actualizarExtra = function(index, campo, valor) {
     carrito[index][campo] = valor;
     localStorage.setItem('carrito', JSON.stringify(carrito));
 }
@@ -69,8 +68,7 @@ function guardarYRenderizar() {
     actualizarContador();
 }
 
-// --- 3. RENDERIZADO CORREGIDO ---
-
+// --- 4. RENDERIZADO ---
 function renderizarCarrito() {
     const container = document.getElementById('cart-items');
     const totalContainer = document.getElementById('cart-total');
@@ -136,13 +134,7 @@ function generarSelectores(p, index) {
     return selectores;
 }
 
-// Nueva función para guardar las elecciones de café/chocolate
-function actualizarExtra(index, campo, valor) {
-    carrito[index][campo] = valor;
-    localStorage.setItem('carrito', JSON.stringify(carrito));
-}
-
-function toggleCart() {
+window.toggleCart = function() {
     const modal = document.getElementById('cart-modal');
     if (modal) {
         modal.classList.toggle('hidden');
