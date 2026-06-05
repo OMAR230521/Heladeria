@@ -444,24 +444,35 @@
 
     <div class="cart-footer">
       <h3>Total: $<span id="cart-total">0</span></h3>
-      <!-- Este botón después lo conectaremos con Mercado Pago -->
       <button id="btn-pagar" class="btn-checkout" onclick="procesarPago()">Ir a Pagar</button>
     </div>
 
   </div>
 </div>
 
+<!-- CEREBRO CON SUPER MEMORIA (LOCALSTORAGE) -->
 <script>
-  // 1. Memoria del carrito (Arranca vacío)
-  let carrito = [];
+  // 1. Intenta leer el carrito guardado en el navegador. Si no hay nada, arranca vacío []
+  let carrito = JSON.parse(localStorage.getItem('carrito')) || [];
 
-  // 2. Función para abrir y cerrar con el deslizamiento nuevo
+  // 2. Función que actualiza el número flotante apenas entrás a cualquier página
+  function actualizarContador() {
+    const contador = document.getElementById('cart-count');
+    if (contador) {
+      contador.innerText = carrito.length;
+    }
+  }
+
+  // Esto hace que el navegador recuerde el número apenas se abre la pantalla
+  window.addEventListener('DOMContentLoaded', actualizarContador);
+
+  // 3. Función para abrir y cerrar con el deslizamiento suave
   function toggleCart() {
     const modal = document.getElementById('cart-modal');
     modal.classList.toggle('hidden');
   }
 
-  // 3. Función para mostrar la dirección si eligen Delivery
+  // 4. Función para mostrar la dirección si eligen Delivery
   function toggleDireccion() {
     const campoDireccion = document.getElementById('campo-direccion');
     const opcionDelivery = document.querySelector('input[name="tipo-entrega"][value="delivery"]').checked;
@@ -473,15 +484,18 @@
     }
   }
 
-  // 4. Función para atrapar el producto y sumarlo al total
+  // 5. Función para agregar productos y guardarlos en el bolsillo del navegador
   function agregarAlCarrito(nombre, precio) {
-    // Guarda el producto en la memoria
+    // Guarda el producto en la lista
     carrito.push({ nombre: nombre, precio: parseFloat(precio) });
     
-    // Actualiza el número en el botoncito verde flotante
-    document.getElementById('cart-count').innerText = carrito.length;
+    // Guarda la lista en el almacenamiento local para que no se borre al cambiar de página
+    localStorage.setItem('carrito', JSON.stringify(carrito));
     
-    // Abre el carrito automáticamente para mostrarle al cliente que se agregó bien
+    // Actualiza el contador verde
+    actualizarContador();
+    
+    // Abre el carrito automáticamente con el efecto pro deslizante
     const modal = document.getElementById('cart-modal');
     modal.classList.remove('hidden');
   }
