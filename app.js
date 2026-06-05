@@ -445,6 +445,7 @@ function agregarAlCarrito(nombre, precio) {
     let tipo = "otro";
     let tope = 0;
     
+    // Clasificación
     if (nombre.includes("1 Kg") || nombre.includes("1/2 Kg") || nombre.includes("1/4 Kg") || nombre.includes("Promo 2x1")) {
         tipo = "helado";
         if (nombre.includes("1 Kg")) tope = 4;
@@ -453,13 +454,26 @@ function agregarAlCarrito(nombre, precio) {
         else if (nombre.includes("Promo 2x1")) tope = 4;
     }
 
+    // Aseguramos que el precio sea un número real
+    let precioNumerico = parseFloat(precio) || 0;
+
+    // LÓGICA DE AGRUPACIÓN:
+    // Si es helado, ID único (no se agrupan). Si es "otro", ID es el nombre (se agrupan).
     let id = (tipo === "helado") ? Date.now() : nombre;
     let productoExistente = carrito.find(item => item.id === id);
 
     if (productoExistente) {
         productoExistente.cantidad += 1;
     } else {
-        carrito.push({ id, nombre, precioBase: parseFloat(precio), tipo, tope, cantidad: 1, gustos: Array(tope).fill("") });
+        carrito.push({
+            id: id,
+            nombre: nombre,
+            precioBase: precioNumerico, // Aquí nos aseguramos de guardar el precio
+            tipo: tipo,
+            tope: tope,
+            cantidad: 1, // Definimos cantidad inicial siempre
+            gustos: Array(tope).fill("")
+        });
     }
     guardarYRenderizar();
 }
