@@ -451,14 +451,17 @@
   </div>
 </div>
 
-  <script>
-  // Esta función abre y cierra el panel lateral del carrito
+<script>
+  // 1. Memoria del carrito (Arranca vacío)
+  let carrito = [];
+
+  // 2. Función para abrir y cerrar con el deslizamiento nuevo
   function toggleCart() {
     const modal = document.getElementById('cart-modal');
     modal.classList.toggle('hidden');
   }
 
-  // Esta función muestra el renglón de la calle solo si eligen Delivery
+  // 3. Función para mostrar la dirección si eligen Delivery
   function toggleDireccion() {
     const campoDireccion = document.getElementById('campo-direccion');
     const opcionDelivery = document.querySelector('input[name="tipo-entrega"][value="delivery"]').checked;
@@ -468,6 +471,19 @@
     } else {
       campoDireccion.classList.add('hidden');
     }
+  }
+
+  // 4. Función para atrapar el producto y sumarlo al total
+  function agregarAlCarrito(nombre, precio) {
+    // Guarda el producto en la memoria
+    carrito.push({ nombre: nombre, precio: parseFloat(precio) });
+    
+    // Actualiza el número en el botoncito verde flotante
+    document.getElementById('cart-count').innerText = carrito.length;
+    
+    // Abre el carrito automáticamente para mostrarle al cliente que se agregó bien
+    const modal = document.getElementById('cart-modal');
+    modal.classList.remove('hidden');
   }
 </script>
   
