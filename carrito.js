@@ -16,6 +16,14 @@ window.agregarAlCarrito = function(nombre, precio) {
         else if (nombre.includes("1/2 Kg")) tope = 3;
         else if (nombre.includes("1/4 Kg")) tope = 2;
         else if (nombre.includes("Promo 2x1")) tope = 4;
+        else if (nombre.toLowerCase().includes("batido de 3 bochas")) {
+        tipo = "helado";
+        tope = 3;
+    } 
+    else if (nombre.toLowerCase().includes("doble sabor") || nombre.toLowerCase().includes("milkshake")) {
+        tipo = "helado";
+        tope = 8; 
+    }
     } else if (nombre.toLowerCase().includes("café")) {
         tipo = "cafe";
     } else if (nombre.toLowerCase().includes("mamuschka")) {
