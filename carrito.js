@@ -1,5 +1,8 @@
 // --- 1. BASES DE DATOS ---
 const listaSaboresHelados = ["MOUSSE DE CHOCOLATE", "MOUSSE DE FRAMBUESA", "MOUSSE DE LEMON PIE", "MOUSSE DE MARACUYA", "MOUSSE DE LIMON", "ANANA AL AGUA", "DURAZNO AL AGUA", "FRANUI AL AGUA", "FRUTILLA AL AGUA", "FRUTOS PATAGONICOS AL AGUA", "LIMON AL AGUA", "LIMON, JENGIBRE Y MENTA(AL AGUA)", "LIMON, JENGIBRE Y ALBAHACA(AL AGUA)", "DULCE DE LECHE BOMBON", "DULCE DE LECHE BROWNIE", "DULCE DE LECHE CLASICO", "CHOCOTORTA", "COCO CON DULCE DE LECHE", "DULCE DE LECHE CRUNCH", "FLAN CON DULCE DE LECHE", "DULCE DE LECHE GRANIZADO", "SUPER DULCE DE LECHE", "CHOCOLATE BLANCO", "CHOCOLATE BLOCK", "CHOCOLATE BUENARDO", "CHOCOLATE CLASICO", "CHOCOLATE CON ALMENDRAS", "CHOCOLATE CON PASAs", "CHOCOLATE DOLCE BAJON", "CHOCOLATE HAVANNA", "CHOCOLATE KINDER", "CHOCOLATE MARROC", "CHOCOLATE MARQUISE", "CHOCOLATE NUCCIOLATO", "CHOCOLATE NUTELLA", "CHOCOLATE ROCHER", "CHOCOLATE SUIZO", "BANANITA DOLCA", "BANANA SPLIT", "BANANA SPLIT CON NUEZ", "BANANA CON NUTELLA", "CREMA BON O BOM", "CADBURY DE FRUTILLA", "CEREZA A LA CREMA", "CHEESECAKE", "CREMA DE ARANDANOS", "CREMA DEL CIELO", "CREMA OREO", "CREMA RUSA", "FORNITE", "FRAMTTINO", "FRAMBUESA CON PISTACHO", "FRUTOS DEL BOSQUE", "GRANIZADo", "KINOTOS AL WHISKY", "MANTECOL", "MASCARPONE CON FRUTOS ROJOS", "MENTA GRANIZADA", "PISTACHO", "TIRAMISU", "FRAMBUESA AL AGUA", "SAMBAYON ITALIANO", "MOUSSE DE LIMON HAVANNA", "FRAMBUESA A LA CREMA", "NONA VICENTA", "Açaí", "SCALONETA"];
+
+const listaSaboresMilkshakes = ["Oreo", "Bon o bon", "Chocolate dubai", "Pistacho", "Ferrero rocher", "Frapuchino americana", "Frapuccino dulce de leche", "Dolce valentino", "Dulce de leche", "Belga furioso", "Chocolinas", "Creza silvestre"];
+
 const tiposLeche = ["Entera", "Descremada", "Almendra"];
 const variedadesCafe = ["Capuccino", "Latte", "Flat white", "Cortado", "Espresso simple", "Espresso doble", "Americano simple", "Americano doble"];
 let carrito = JSON.parse(localStorage.getItem('carrito')) || [];
@@ -9,7 +12,7 @@ window.agregarAlCarrito = function(nombre, precio) {
     let tipo = "otro";
     let tope = 0;
     
-    // --- CLASIFICACIÓN CORREGIDA (Sin el error de HTML:) ---
+    // --- CLASIFICACIÓN ---
     if (nombre.includes("1 Kg") || nombre.includes("1/2 Kg") || nombre.includes("1/4 Kg") || nombre.includes("Promo 2x1")) {
         tipo = "helado";
         if (nombre.includes("1 Kg")) tope = 4;
@@ -19,15 +22,15 @@ window.agregarAlCarrito = function(nombre, precio) {
     } 
     else if (nombre.toLowerCase().includes("batido de 3 bochas")) {
         tipo = "helado";
-        text: tope = 3;
+        tope = 3;
     } 
-    else if (nombre.toLowerCase().includes("doble sabor") || nombre.toLowerCase().includes("milkshake")) {
+    else if (nombre.toLowerCase().includes("milkshake")) {
+        tipo = "milkshake";
+        tope = 1; // 1 sola opción para elegir
+    }
+    else if (nombre.toLowerCase().includes("doble sabor")) {
         tipo = "helado";
-        if (nombre.toLowerCase().includes("doble sabor")) {
-            tope = 8; 
-        } else {
-            tope = 2;
-        }
+        tope = 8; 
     } 
     else if (nombre.toLowerCase().includes("café")) {
         tipo = "cafe";
@@ -38,8 +41,12 @@ window.agregarAlCarrito = function(nombre, precio) {
 
     let precioNumerico = parseFloat(precio) || 0;
 
-    // LÓGICA DE AGRUPACIÓN:
-    let id = (tipo === "helado") ? Date.now() : nombre;
+    // LÓGICA DE AGRUPACIÓN SEPARADA:
+    // Si el producto requiere personalización (helados, batidos, milkshakes), 
+    // se fuerza un ID único con Date.now() para que nunca se agrupe ni se pisen los sabores.
+    const requierePersonalizar = (tipo === "helado" || tipo === "milkshake");
+    let id = requierePersonalizar ? Date.now() : nombre;
+    
     let productoExistente = carrito.find(item => item.id === id);
 
     if (productoExistente) {
@@ -94,21 +101,19 @@ function renderizarCarrito() {
         let precioItem = p.precioBase * p.cantidad;
         totalGeneral += precioItem;
 
-        const usaBotonesMasMenos = p.tipo !== 'helado' || 
-                                   p.nombre.toLowerCase().includes("batido") || 
-                                   p.nombre.toLowerCase().includes("sabor") || 
-                                   p.nombre.toLowerCase().includes("milkshake");
+        // Evitamos botones +/- si es helado, batido o milkshake. Así se manejan por separado con la X.
+        const tieneSabores = (p.tipo === 'helado' || p.tipo === 'milkshake');
 
         html += `
         <div style="padding:15px; border-bottom:1px solid #eee; background:#fff; margin-bottom: 5px; border-radius: 8px;">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-                <div style="font-weight:bold; font-size: 15px;">${p.nombre} ${p.tipo !== 'helado' ? `(x${p.cantidad})` : ''}</div>
+                <div style="font-weight:bold; font-size: 15px;">${p.nombre} ${!tieneSabores ? `(x${p.cantidad})` : ''}</div>
                 <div style="display:flex; gap:5px;">
-                    ${usaBotonesMasMenos ? `
+                    ${!tieneSabores ? `
                         <button onclick="cambiarCantidad(${index}, -1)" style="border:1px solid #ff477e; border-radius:5px; width:30px; height:30px; background:#fff; color:#ff477e; font-weight:bold;">-</button>
                         <button onclick="cambiarCantidad(${index}, 1)" style="border:1px solid #ff477e; border-radius:5px; width:30px; height:30px; background:#fff; color:#ff477e; font-weight:bold;">+</button>
                     ` : `
-                        <button onclick="eliminarDelCarrito(${index})" style="background:#ffccd8; border:none; border-radius:50%; width:30px; height:30px;">X</button>
+                        <button onclick="eliminarDelCarrito(${index})" style="background:#ffccd8; border:none; border-radius:50%; width:30px; height:30px; color:#ff477e; font-weight:bold; cursor:pointer;">X</button>
                     `}
                 </div>
             </div>
@@ -126,8 +131,7 @@ function generarSelectores(p, index) {
 
     if (p.tipo === "helado") {
         selectores += `<div style="font-size:11px; color:#888; margin-bottom:5px;">SABORES (Elegí ${p.tope}):</div>`;
-        selectores += `<div style="max-height: 200px; overflow-y: auto; padding-right: 5px;">`;
-        
+        selectores += `<div style="max-height: 180px; overflow-y: auto; padding-right: 5px;">`;
         for (let i = 0; i < p.tope; i++) {
             selectores += `
             <select onchange="guardarGusto(${index}, ${i}, this.value)" style="width:100%; padding:8px; margin-bottom:5px; border:1px solid #ffccd8; border-radius:8px; background:#fff;">
@@ -135,9 +139,16 @@ function generarSelectores(p, index) {
                 ${listaSaboresHelados.map(s => `<option value="${s}" ${p.gustos[i] === s ? 'selected' : ''}>${s}</option>`).join('')}
             </select>`;
         }
-        
         selectores += `</div>`;
     } 
+    else if (p.tipo === "milkshake") {
+        selectores += `
+        <div style="font-size:11px; color:#888; margin-bottom:5px;">SABOR DE MILKSHAKE:</div>
+        <select onchange="guardarGusto(${index}, 0, this.value)" style="width:100%; padding:8px; margin-bottom:5px; border:1px solid #ffccd8; border-radius:8px; background:#fff;">
+            <option value="">Elegí un sabor</option>
+            ${listaSaboresMilkshakes.map(s => `<option value="${s}" ${p.gustos[0] === s ? 'selected' : ''}>${s}</option>`).join('')}
+        </select>`;
+    }
     else if (p.tipo === "cafe") {
         selectores += `
         <select onchange="actualizarExtra(${index}, 'variedad', this.value)" style="width:100%; padding:8px; margin-bottom:5px; border:1px solid #ffccd8; border-radius:8px;">
