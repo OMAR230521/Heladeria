@@ -452,7 +452,7 @@
 
 <!-- CEREBRO CON SUPER MEMORIA (LOCALSTORAGE) -->
 <script>
-  // 1. BASES DE DATOS DEL MENÚ
+  // 1. BASES DE DATOS DEL MENÚ COMPLETO (DOLCE TROPEA)
   const listaSaboresHelados = [
     "MOUSSE DE CHOCOLATE", "MOUSSE DE FRAMBUESA", "MOUSSE DE LEMON PIE", "MOUSSE DE MARACUYA", "MOUSSE DE LIMON",
     "ANANA AL AGUA", "DURAZNO AL AGUA", "FRANUI AL AGUA", "FRUTILLA AL AGUA", "FRUTOS PATAGONICOS AL AGUA", "LIMON AL AGUA",
@@ -477,6 +477,10 @@
   const listaSalsas = ["Chocolate", "Frutilla", "Frutos Patagónicos", "Dulce de Leche", "Caramelo"];
   const opcionesDubai = ["Amargo", "Amargo con sal"];
   const opcionesGrajeas = ["Naranja con chocolate semiamargo", "Avellanas con chocolate caramelizado"];
+  
+  // NUEVAS LISTAS DE CAFETERÍA
+  const listaVariedadesCafe = ["Capuccino", "Latte", "Flat white", "Cortado", "Espresso simple", "Espresso doble", "Americano simple", "Americano doble"];
+  const listaLeches = ["Entera", "Deslactosada", "Vegetal (Almendras)"];
 
   let carrito = JSON.parse(localStorage.getItem('carrito')) || [];
 
@@ -523,7 +527,7 @@
         html += `<div style="font-weight: bold; color: #ff477e; margin-bottom: 4px;">SABORES (MÁX. ${producto.tope}):</div>`;
         for (let i = 0; i < producto.tope; i++) {
           html += `
-            <select onchange="guardarOpcionEspecial(${index}, 'gustos', this.value, ${i})" style="width:100%; margin-bottom:4px; padding:4px; border-radius:4px; border:1px solid #ffccd8;">
+            <select onchange="guardarOpcionEspecial(${index}, 'gustos', this.value, ${i})" style="width:100%; margin-bottom:4px; padding:4px; border-radius:4px; border:1px solid #ffccd8; background: #fff;">
               <option value="">-- Gusto ${i+1} --</option>
               ${listaSaboresHelados.map(s => `<option value="${s}" ${producto.gustos && producto.gustos[i] === s ? 'selected' : ''}>${s}</option>`).join('')}
             </select>`;
@@ -534,7 +538,7 @@
       else if (producto.tipo === "milkshake") {
         html += `
           <div style="font-weight: bold; color: #ff477e; margin-bottom: 4px;">ELEGÍ EL SABOR:</div>
-          <select onchange="guardarOpcionEspecial(${index}, 'sabor', this.value)" style="width:100%; padding:4px; border-radius:4px; border:1px solid #ffccd8;">
+          <select onchange="guardarOpcionEspecial(${index}, 'sabor', this.value)" style="width:100%; padding:4px; border-radius:4px; border:1px solid #ffccd8; background: #fff;">
             <option value="">-- Seleccionar Sabores --</option>
             ${listaMilkshakes.map(m => `<option value="${m}" ${producto.sabor === m ? 'selected' : ''}>${m}</option>`).join('')}
           </select>`;
@@ -544,26 +548,26 @@
       else if (producto.tipo === "salsa") {
         html += `
           <div style="font-weight: bold; color: #ff477e; margin-bottom: 4px;">ELEGÍ TU SALSA:</div>
-          <select onchange="guardarOpcionEspecial(${index}, 'sabor', this.value)" style="width:100%; padding:4px; border-radius:4px; border:1px solid #ffccd8;">
+          <select onchange="guardarOpcionEspecial(${index}, 'sabor', this.value)" style="width:100%; padding:4px; border-radius:4px; border:1px solid #ffccd8; background: #fff;">
             <option value="">-- Seleccionar Salsa --</option>
             ${listaSalsas.map(s => `<option value="${s}" ${producto.sabor === s ? 'selected' : ''}>${s}</option>`).join('')}
           </select>`;
       }
 
-      // CASO D: Chocolates Dubai (Maneja múltiples opciones independientes si se ordenan varios)
+      // CASO D: Chocolates Dubai
       else if (producto.tipo === "dubai") {
         html += `<div style="font-weight: bold; color: #ff477e; margin-bottom: 4px;">OPCIÓN PERCANTA:</div>`;
         let cantidadDubai = producto.nombre.includes("2 Chocolates") ? 2 : 1;
         for (let i = 0; i < cantidadDubai; i++) {
           html += `
-            <select onchange="guardarOpcionEspecial(${index}, 'opciones', this.value, ${i})" style="width:100%; margin-bottom:4px; padding:4px; border-radius:4px; border:1px solid #ffccd8;">
+            <select onchange="guardarOpcionEspecial(${index}, 'opciones', this.value, ${i})" style="width:100%; margin-bottom:4px; padding:4px; border-radius:4px; border:1px solid #ffccd8; background: #fff;">
               <option value="">-- Variante Chocolate ${i+1} --</option>
               ${opcionesDubai.map(o => `<option value="${o}" ${producto.opciones && producto.opciones[i] === o ? 'selected' : ''}>${o}</option>`).join('')}
             </select>`;
         }
       }
 
-      // CASO E: Chocolate Lorenzo (Suma $1 por unidad elegida)
+      // CASO E: Chocolate Lorenzo
       else if (producto.tipo === "lorenzo") {
         html += `
           <div style="font-weight: bold; color: #ff477e; margin-bottom: 6px;">AGREGAR EXTRAS (+$1 c/u):</div>
@@ -581,9 +585,34 @@
       else if (producto.tipo === "grajeas") {
         html += `
           <div style="font-weight: bold; color: #ff477e; margin-bottom: 4px;">SELECCIONÁ UNA COMBINACIÓN:</div>
-          <select onchange="guardarOpcionEspecial(${index}, 'sabor', this.value)" style="width:100%; padding:4px; border-radius:4px; border:1px solid #ffccd8;">
+          <select onchange="guardarOpcionEspecial(${index}, 'sabor', this.value)" style="width:100%; padding:4px; border-radius:4px; border:1px solid #ffccd8; background: #fff;">
             <option value="">-- Seleccionar Opción --</option>
             ${opcionesGrajeas.map(g => `<option value="${g}" ${producto.sabor === g ? 'selected' : ''}>${g}</option>`).join('')}
+          </select>`;
+      }
+
+      // NUEVO CASO G: Cafés (Pide Variante y Leche)
+      else if (producto.tipo === "cafe") {
+        html += `
+          <div style="font-weight: bold; color: #ff477e; margin-bottom: 4px;">ESTILO DE CAFÉ:</div>
+          <select onchange="guardarOpcionEspecial(${index}, 'sabor', this.value)" style="width:100%; margin-bottom:6px; padding:4px; border-radius:4px; border:1px solid #ffccd8; background: #fff;">
+            <option value="">-- Seleccionar Tipo --</option>
+            ${listaVariedadesCafe.map(c => `<option value="${c}" ${producto.sabor === c ? 'selected' : ''}>${c}</option>`).join('')}
+          </select>
+          <div style="font-weight: bold; color: #ff477e; margin-bottom: 4px;">TIPO DE LECHE:</div>
+          <select onchange="guardarOpcionEspecial(${index}, 'leche', this.value)" style="width:100%; padding:4px; border-radius:4px; border:1px solid #ffccd8; background: #fff;">
+            <option value="">-- Seleccionar Leche --</option>
+            ${listaLeches.map(l => `<option value="${l}" ${producto.leche === l ? 'selected' : ''}>${l}</option>`).join('')}
+          </select>`;
+      }
+
+      // NUEVO CASO H: Chocolate Mamuschka (Solo pide Leche)
+      else if (producto.tipo === "chocolate-mamuschka") {
+        html += `
+          <div style="font-weight: bold; color: #ff477e; margin-bottom: 4px;">TIPO DE LECHE:</div>
+          <select onchange="guardarOpcionEspecial(${index}, 'leche', this.value)" style="width:100%; padding:4px; border-radius:4px; border:1px solid #ffccd8; background: #fff;">
+            <option value="">-- Seleccionar Leche --</option>
+            ${listaLeches.map(l => `<option value="${l}" ${producto.leche === l ? 'selected' : ''}>${l}</option>`).join('')}
           </select>`;
       }
 
@@ -599,7 +628,7 @@
     let tipo = "otro";
     let tope = 0;
 
-    // Detectamos qué clase de producto es para asignarle sus propiedades
+    // Clasificación total de productos
     if (nombre.includes("1 Kg")) { tipo = "helado"; tope = 4; }
     else if (nombre.includes("1/2 Kg")) { tipo = "helado"; tope = 3; }
     else if (nombre.includes("1/4 Kg")) { tipo = "helado"; tope = 2; }
@@ -611,6 +640,8 @@
     else if (nombre.toLowerCase().includes("dubai")) { tipo = "dubai"; }
     else if (nombre.toLowerCase().includes("lorenzo")) { tipo = "lorenzo"; }
     else if (nombre.toLowerCase().includes("grajeas")) { tipo = "grajeas"; }
+    else if (nombre.toLowerCase().includes("cafe") || nombre.toLowerCase().includes("café")) { tipo = "cafe"; }
+    else if (nombre.toLowerCase().includes("mamuschka")) { tipo = "chocolate-mamuschka"; }
 
     let nuevoItem = {
       nombre: nombre,
@@ -619,10 +650,12 @@
       tope: tope
     };
 
-    // Estructuras iniciales para evitar errores de lectura
+    // Estructuras de inicio
     if (tipo === "helado") nuevoItem.gustos = Array(tope).fill("");
     if (tipo === "dubai") nuevoItem.opciones = nombre.includes("2 Chocolates") ? ["", ""] : [""];
     if (tipo === "lorenzo") nuevoItem.extras = { avellanas: 0, coco: 0 };
+    if (tipo === "cafe") { nuevoItem.sabor = ""; nuevoItem.leche = ""; }
+    if (tipo === "chocolate-mamuschka") { nuevoItem.leche = ""; }
 
     carrito.push(nuevoItem);
     localStorage.setItem('carrito', JSON.stringify(carrito));
@@ -630,7 +663,6 @@
     renderizarCarrito();
   }
 
-  // Guardado de opciones y extras en memoria local
   function guardarOpcionEspecial(indexProducto, propiedad, valor, subIndex = null) {
     if (subIndex !== null) {
       carrito[indexProducto][propiedad][subIndex] = valor;
@@ -645,7 +677,7 @@
     if (parseInt(valor) > 100) valor = 100;
     carrito[indexProducto].extras[ingrediente] = parseInt(valor) || 0;
     localStorage.setItem('carrito', JSON.stringify(carrito));
-    renderizarCarrito(); // Refresca los subtotales al instante
+    renderizarCarrito();
   }
 
   function eliminarDelCarrito(index) {
@@ -678,7 +710,7 @@
     else campoDireccion.classList.add('hidden');
   }
 
-  // 4. PASO FINAL: PROCESAR PAGO Y ENVIAR TODO A WHATSAPP
+  // 4. PASO FINAL: ENVIAR TODO ORDENADO A WHATSAPP
   function procesarPago() {
     const nombre = document.getElementById('cliente-nombre').value.trim();
     const apellido = document.getElementById('cliente-apellido').value.trim();
@@ -686,7 +718,6 @@
     const tipoEntrega = document.querySelector('input[name="tipo-entrega"]:checked').value;
     const direccion = document.getElementById('cliente-direccion').value.trim();
 
-    // Validaciones básicas de seguridad
     if (!nombre || !apellido || !telefono) {
       alert("Por favor, completa tus datos de contacto (Nombre, Apellido y Teléfono).");
       return;
@@ -700,7 +731,6 @@
       return;
     }
 
-    // Armado del mensaje de texto bien estético
     let mensaje = `🍦 *NUEVO PEDIDO - DOLCE TROPEA* 🍦\n\n`;
     mensaje += `👤 *Cliente:* ${nombre} ${apellido}\n`;
     mensaje += `📞 *Teléfono:* ${telefono}\n`;
@@ -726,6 +756,10 @@
         extra += prod.extras.avellanas * 1;
         extra += prod.extras.coco * 1;
         detalleExtras = `\n   · Extras: ${prod.extras.avellanas} Avellanas, ${prod.extras.coco} Coco en escamas`;
+      } else if (prod.tipo === "cafe") {
+        detalleExtras = `\n   · Estilo: ${prod.sabor || 'No seleccionado'}\n   · Leche: ${prod.leche || 'No seleccionada'}`;
+      } else if (prod.tipo === "chocolate-mamuschka") {
+        detalleExtras = `\n   · Leche: ${prod.leche || 'No seleccionada'}`;
       }
 
       let precioItem = prod.precioBase + extra;
@@ -735,11 +769,11 @@
 
     mensaje += `\n💰 *TOTAL A PAGAR:* $${totalFactura.toLocaleString('es-AR')}`;
 
-    // Codificar texto para que sea apto para URLs y redireccionar
-    const numeroCelular = "TU_NUMERO_AQUÍ"; // Colocá tu número acá (Ej: 542971234567)
+    // CONFIGURACIÓN DE TU WHATSAPP (Poné tu número real sin el + ni espacios)
+    const numeroCelular = "542971234567"; 
     const urlWhatsapp = `https://api.whatsapp.com/send?phone=${numeroCelular}&text=${encodeURIComponent(mensaje)}`;
     
-    // Vaciar carrito después de comprar para no duplicar pedidos viejos
+    // Vaciar carrito
     localStorage.removeItem('carrito');
     carrito = [];
     actualizarContador();
