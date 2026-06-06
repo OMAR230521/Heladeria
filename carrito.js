@@ -137,7 +137,7 @@ function generarSelectores(p, index) {
         for (let i = 0; i < p.tope; i++) {
             selectores += `
             <select onchange="guardarGusto(${index}, ${i}, this.value)" style="width:100%; padding:8px; margin-bottom:5px; border:1px solid #ffccd8; border-radius:8px; background:#fff;">
-                <option value="">Gusto ${i + 1}</option>
+                <option value="" disabled ${p.gustos[i] === "" ? 'selected' : ''} style="color:#aaa;">Gusto ${i + 1}</option>
                 ${listaSaboresHelados.map(s => `<option value="${s}" ${p.gustos[i] === s ? 'selected' : ''}>${s}</option>`).join('')}
             </select>`;
         }
@@ -147,25 +147,25 @@ function generarSelectores(p, index) {
         selectores += `
         <div style="font-size:11px; color:#888; margin-bottom:5px;">SABOR DE MILKSHAKE:</div>
         <select onchange="guardarGusto(${index}, 0, this.value)" style="width:100%; padding:8px; margin-bottom:5px; border:1px solid #ffccd8; border-radius:8px; background:#fff;">
-            <option value="">Elegí un sabor</option>
+            <option value="" disabled ${p.gustos[0] === "" ? 'selected' : ''} style="color:#aaa;">Elegí un sabor</option>
             ${listaSaboresMilkshakes.map(s => `<option value="${s}" ${p.gustos[0] === s ? 'selected' : ''}>${s}</option>`).join('')}
         </select>`;
     }
     else if (p.tipo === "cafe") {
         selectores += `
         <select onchange="actualizarExtra(${index}, 'variedad', this.value)" style="width:100%; padding:8px; margin-bottom:5px; border:1px solid #ffccd8; border-radius:8px; background:#fff;">
-            <option value="">Tipo de café</option>
+            <option value="" disabled ${!p.variedad ? 'selected' : ''} style="color:#aaa;">Tipo de café</option>
             ${variedadesCafe.map(v => `<option value="${v}" ${p.variedad === v ? 'selected' : ''}>${v}</option>`).join('')}
         </select>
         <select onchange="actualizarExtra(${index}, 'leche', this.value)" style="width:100%; padding:8px; margin-bottom:5px; border:1px solid #ffccd8; border-radius:8px; background:#fff;">
-            <option value="">Tipo de leche</option>
+            <option value="" disabled ${!p.leche ? 'selected' : ''} style="color:#aaa;">Tipo de leche</option>
             ${tiposLeche.map(l => `<option value="${l}" ${p.leche === l ? 'selected' : ''}>${l}</option>`).join('')}
         </select>`;
     }
     else if (p.tipo === "chocolate") {
         selectores += `
         <select onchange="actualizarExtra(${index}, 'leche', this.value)" style="width:100%; padding:8px; margin-bottom:5px; border:1px solid #ffccd8; border-radius:8px; background:#fff;">
-            <option value="">Tipo de leche</option>
+            <option value="" disabled ${!p.leche ? 'selected' : ''} style="color:#aaa;">Tipo de leche</option>
             ${tiposLeche.map(l => `<option value="${l}" ${p.leche === l ? 'selected' : ''}>${l}</option>`).join('')}
         </select>`;
     }
