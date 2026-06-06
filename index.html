@@ -396,19 +396,21 @@
     });
   </script>
 
-  <!-- Botón Flotante del Carrito -->
+ <!-- Botón Flotante del Carrito -->
 <button id="btn-flotante-carrito" class="cart-floating-btn" onclick="toggleCart()">
   🛒 <span id="cart-count">0</span>
 </button>
 
 <!-- Ventana del Carrito y Formulario (Oculta por defecto) -->
 <div id="cart-modal" class="cart-modal-overlay hidden">
-  <div class="cart-modal-content">
+  <!-- Le agregamos overflow: hidden para que nada de lo que suba se escape por los bordes redondeados del modal -->
+  <div class="cart-modal-content" style="position: relative; overflow: hidden; padding-top: 0;">
     
-    <div class="cart-header" style="position: sticky; top: 0; z-index: 100; background: #ffffff; display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; border-bottom: 1px solid #eee; border-top-left-radius: 16px; border-top-right-radius: 16px;">
-  <h2 style="margin: 0;">Tu Pedido</h2>
-  <button class="close-cart" onclick="toggleCart()">❌</button>
-</div>
+    <!-- ENCABEZADO MEJORADO Y CONGELADO -->
+    <div class="cart-header" style="position: sticky; top: 0; z-index: 100; background: #ffffff; display: flex; justify-content: space-between; align-items: center; padding: 20px; border-bottom: 1px solid #eee; margin-left: 0; margin-right: 0; margin-top: 0;">
+      <h2 style="margin: 0;">Tu Pedido</h2>
+      <button class="close-cart" onclick="toggleCart()">❌</button>
+    </div>
 
     <!-- Acá se van a inyectar los helados que elija -->
     <div id="cart-items" class="cart-items-container">
