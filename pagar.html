@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Finalizar Pago - Dolce Tropea</title>
+    <!-- Vinculamos tu CSS para mantener las fuentes y variables del modo oscuro -->
+    <link rel="stylesheet" href="styles_2.css">
+    <style>
+        .pago-body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background-color: var(--color-bg-base);
+            padding: 20px;
+        }
+        .pago-card {
+            background-color: var(--color-bg-card);
+            max-width: 480px;
+            width: 100%;
+            padding: 30px;
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--color-border);
+            text-align: center;
+        }
+        .resumen-caja {
+            background-color: var(--color-bg-base);
+            padding: 15px;
+            border-radius: var(--radius-sm);
+            margin: 20px 0;
+            text-align: left;
+            border: 1px solid var(--color-border);
+        }
+        .resumen-caja p {
+            margin-bottom: 6px;
+            font-size: 0.95rem;
+        }
+        .metodos-lista {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin: 20px 0;
+        }
+        .metodo-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px;
+            border: 2px solid var(--color-border);
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: var(--transition-fast);
+            font-weight: 600;
+        }
+        .metodo-item:hover {
+            border-color: var(--color-secondary);
+        }
+        .metodo-item input {
+            accent-color: var(--color-secondary);
+            width: 18px;
+            height: 18px;
+        }
+    </style>
+</head>
+<body class="pago-body">
+
+    <div class="pago-card">
+        <h2 style="color: var(--color-primary); font-family: 'Outfit', sans-serif;">Plataforma de Pago</h2>
+        <p style="color: var(--color-text-muted); font-size: 0.9rem; margin-top: 5px;">Simulación de entorno seguro para Dolce Tropea</p>
+        
+        <!-- Contenedor del Resumen del pedido -->
+        <div class="resumen-caja">
+            <p><strong>Pedido:</strong> <span id="resumen-id">-</span></p>
+            <p><strong>Cliente:</strong> <span id="resumen-cliente">-</span></p>
+            <p><strong>Tipo de Entrega:</strong> <span id="resumen-entrega">-</span></p>
+            <h3 style="color: var(--color-secondary); margin-top: 12px; font-family: 'Outfit', sans-serif; font-size: 1.3rem;">
+                Total a abonar: $<span id="resumen-total">0</span>
+            </h3>
+        </div>
+
+        <h3 style="color: var(--color-primary); text-align: left; font-size: 1.05rem; font-family: 'Outfit', sans-serif;">Seleccioná el método:</h3>
+        
+        <!-- Opciones de pago -->
+        <div class="metodos-lista">
+            <label class="metodo-item">
+                <input type="radio" name="metodo-pago" value="Transferencia" checked>
+                <span>Transferencia Bancaria (Simulado)</span>
+            </label>
+            <label class="metodo-item">
+                <input type="radio" name="metodo-pago" value="MercadoPago">
+                <span>Mercado Pago (Simulado)</span>
+            </label>
+        </div>
+
+        <!-- Botón de acción principal usando tus clases globales -->
+        <button onclick="confirmarYEnviar()" class="btn btn-primary" style="width: 100%; justify-content: center; margin-top: 10px;">
+            ✅ Confirmar Pago y Enviar WhatsApp
+        </button>
+    </div>
+
+    <script>
+        // Acá va a ir la lógica que lee los datos y arma el mensaje de WhatsApp
+    </script>
+
+</body>
+</html>
