@@ -191,7 +191,15 @@ const enlaceWhatsapp =
     `https://wa.me/${telefonoNegocio}?text=${encodeURIComponent(m)}`;
 
 window.open(enlaceWhatsapp, '_blank');
-}
+
+    // Limpiar carrito y pedido temporal
+localStorage.removeItem('carrito');
+localStorage.removeItem('pedido_pendiente_pago');
+localStorage.removeItem('mensaje_whatsapp_listo');
+
+    setTimeout(() => {
+    window.location.href = "index.html";
+}, 1500);
 
         // Función para copiar el CBU y Alias al portapapeles automáticamente
 window.copiarDatos = function() {
