@@ -403,56 +403,60 @@
 
 <!-- Ventana del Carrito y Formulario (Oculta por defecto) -->
 <div id="cart-modal" class="cart-modal-overlay hidden">
-  <!-- Quitamos el overflow hidden de acá para que no bloquee la pantalla -->
-  <div class="cart-modal-content" style="position: relative; display: flex; flex-direction: column; max-height: 85vh; padding: 0; overflow: hidden;">
+  <!-- Usamos tus variables de diseño: --color-bg-card y --color-text-main -->
+  <div class="cart-modal-content" style="position: relative; display: flex; flex-direction: column; max-height: 90vh; padding: 0; overflow: hidden; background-color: var(--color-bg-card); color: var(--color-text-main); border: 1px solid var(--color-border);">
     
-    <!-- ENCABEZADO CONGELADO ARRIBA -->
-    <div class="cart-header" style="position: sticky; top: 0; z-index: 100; background: #ffffff; display: flex; justify-content: space-between; align-items: center; padding: 20px; border-bottom: 1px solid #eee;">
-      <h2 style="margin: 0;">Tu Pedido</h2>
-      <button class="close-cart" onclick="toggleCart()">❌</button>
+    <!-- ENCABEZADO FIJO ARRIBA -->
+    <div class="cart-header" style="position: sticky; top: 0; z-index: 100; background-color: var(--color-bg-card); display: flex; justify-content: space-between; align-items: center; padding: 20px; border-bottom: 2px solid var(--color-border);">
+      <!-- var(--color-primary) cambia automáticamente a crema claro en modo oscuro -->
+      <h2 style="margin: 0; color: var(--color-primary); font-family: 'Outfit', sans-serif;">Tu Pedido</h2>
+      <button class="close-cart" onclick="toggleCart()" style="filter: drop-shadow(0px 2px 4px rgba(0,0,0,0.1));">❌</button>
     </div>
 
-    <!-- CONTENEDOR DE PRODUCTOS Y FORMULARIO !-->
-<div style="overflow-y: auto; flex: 1; padding: 0 20px 30px 20px;">
+    <!-- CONTENEDOR CON SCROLL PARA PRODUCTOS Y FORMULARIO -->
+    <div style="overflow-y: auto; flex: 1; padding: 0 20px 30px 20px; background-color: var(--color-bg-card);">
       
-      <!-- Acá se van a inyectar los helados que elija -->
-      <div id="cart-items" class="cart-items-container">
-        <p class="empty-cart-msg">Tu carrito está vacío.</p>
+      <!-- Listado de productos elegidos -->
+      <div id="cart-items" class="cart-items-container" style="margin-top: 15px;">
+        <!-- Se inyecta por JS -->
       </div>
 
-      <!-- Formulario de Datos -->
-      <div class="cart-form" style="margin-top: 20px;">
-        <h3>Datos del Cliente</h3>
-        <div class="form-row">
-          <input type="text" id="cliente-nombre" placeholder="Nombre" required>
-          <input type="text" id="cliente-apellido" placeholder="Apellido" required>
-        </div>
-        <input type="tel" id="cliente-telefono" placeholder="Número de Teléfono" required>
+      <!-- Formulario de Datos del Cliente -->
+      <div class="cart-form" style="margin-top: 25px;">
+        <h3 style="color: var(--color-primary); margin-bottom: 12px; font-family: 'Outfit', sans-serif;">Datos del Cliente</h3>
         
-        <h3>Opciones de Entrega</h3>
-        <div class="delivery-options">
-          <label>
-            <input type="radio" name="tipo-entrega" value="retiro" onclick="toggleDireccion()" checked>
+        <div class="form-row" style="display: flex; gap: 10px;">
+          <input type="text" id="cliente-nombre" placeholder="Nombre" required style="background-color: var(--color-bg-base); color: var(--color-text-main); border: 1px solid var(--color-border); padding: 12px; border-radius: var(--radius-sm); width: 50%;">
+          <input type="text" id="cliente-apellido" placeholder="Apellido" required style="background-color: var(--color-bg-base); color: var(--color-text-main); border: 1px solid var(--color-border); padding: 12px; border-radius: var(--radius-sm); width: 50%;">
+        </div>
+        
+        <input type="tel" id="cliente-telefono" placeholder="Número de Teléfono" required style="background-color: var(--color-bg-base); color: var(--color-text-main); border: 1px solid var(--color-border); padding: 12px; border-radius: var(--radius-sm); width: 100%; margin-top: 10px;">
+        
+        <h3 style="color: var(--color-primary); margin-top: 25px; margin-bottom: 12px; font-family: 'Outfit', sans-serif;">Opciones de Entrega</h3>
+        
+        <div class="delivery-options" style="display: flex; gap: 20px; margin-bottom: 15px; font-weight: 500;">
+          <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;">
+            <input type="radio" name="tipo-entrega" value="retiro" onclick="toggleDireccion()" checked style="accent-color: var(--color-secondary);">
             Retiro en Local
           </label>
-          <label>
-            <input type="radio" name="tipo-entrega" value="delivery" onclick="toggleDireccion()">
+          <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;">
+            <input type="radio" name="tipo-entrega" value="delivery" onclick="toggleDireccion()" style="accent-color: var(--color-secondary);">
             Envío a Domicilio
           </label>
         </div>
 
-        <!-- Campo de dirección (se muestra solo si elige delivery) -->
+        <!-- Campo de dirección dinámico -->
         <div id="campo-direccion" class="hidden">
-          <input type="text" id="cliente-direccion" placeholder="Ej: Av. Alsina 420, Piso 2B">
+          <input type="text" id="cliente-direccion" placeholder="Ej: Av. Alsina 420, Piso 2B" style="background-color: var(--color-bg-base); color: var(--color-text-main); border: 1px solid var(--color-border); padding: 12px; border-radius: var(--radius-sm); width: 100%;">
         </div>
       </div>
 
-    </div> <!-- FIN DEL CONTENEDOR CON SCROLL -->
+    </div> <!-- FIN DEL SCROLL -->
 
     <!-- PIE DE PÁGINA FIJO ABAJO -->
-    <div class="cart-footer" style="position: sticky; bottom: 0; background: #ffffff; border-top: 1px solid #eee; padding: 20px; z-index: 100;">
-      <h3 style="margin-top: 0;">Total: $<span id="cart-total">0</span></h3>
-      <button id="btn-pagar" class="btn-checkout" onclick="procesarPago()" style="width: 100%;">Ir a Pagar</button>
+    <div class="cart-footer" style="position: sticky; bottom: 0; background-color: var(--color-bg-card); border-top: 2px solid var(--color-border); padding: 20px; z-index: 100;">
+      <h3 style="margin-top: 0; margin-bottom: 15px; color: var(--color-primary); font-family: 'Outfit', sans-serif; font-size: 1.4rem;">Total: $<span id="cart-total">0</span></h3>
+      <button id="btn-pagar" class="btn-checkout" onclick="procesarPago()" style="width: 100%; background-color: var(--color-secondary); color: white; padding: 14px; border-radius: var(--radius-full); font-family: 'Outfit', sans-serif; font-weight: 700; border: none; box-shadow: var(--shadow-sm); transition: var(--transition-smooth);">Ir a Pagar</button>
     </div>
 
   </div>
