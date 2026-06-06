@@ -96,7 +96,7 @@ function guardarYRenderizar() {
     actualizarContador();
 }
 
-// --- 4. RENDERIZADO ---
+// --- 4. RENDERIZADO (ADAPTADO A MODO OSCURO) ---
 function renderizarCarrito() {
     const container = document.getElementById('cart-items');
     const totalContainer = document.getElementById('cart-total');
@@ -109,23 +109,23 @@ function renderizarCarrito() {
         let precioItem = p.precioBase * p.cantidad;
         totalGeneral += precioItem;
 
-        // Quitamos los botones +/- 
         const tieneSabores = (p.tipo === 'helado' || p.tipo === 'milkshake' || p.tipo === 'cafe' || p.tipo === 'chocolate' || p.tipo === 'salsa');
 
+        // Cambiado: background usa var(--color-bg-base), bordes var(--color-border) y texto var(--color-text-main)
         html += `
-        <div style="padding:15px; border-bottom:1px solid #eee; background:#fff; margin-bottom: 5px; border-radius: 8px;">
+        <div style="padding:15px; border-bottom:1px solid var(--color-border); background: var(--color-bg-base); margin-bottom: 8px; border-radius: var(--radius-sm); color: var(--color-text-main);">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
                 <div style="font-weight:bold; font-size: 15px;">${p.nombre} ${!tieneSabores ? `(x${p.cantidad})` : ''}</div>
                 <div style="display:flex; gap:5px;">
                     ${!tieneSabores ? `
-                        <button onclick="cambiarCantidad(${index}, -1)" style="border:1px solid #ff477e; border-radius:5px; width:30px; height:30px; background:#fff; color:#ff477e; font-weight:bold;">-</button>
-                        <button onclick="cambiarCantidad(${index}, 1)" style="border:1px solid #ff477e; border-radius:5px; width:30px; height:30px; background:#fff; color:#ff477e; font-weight:bold;">+</button>
+                        <button onclick="cambiarCantidad(${index}, -1)" style="border:1px solid var(--color-secondary); border-radius:var(--radius-sm); width:30px; height:30px; background:transparent; color:var(--color-secondary); font-weight:bold; cursor:pointer;">-</button>
+                        <button onclick="cambiarCantidad(${index}, 1)" style="border:1px solid var(--color-secondary); border-radius:var(--radius-sm); width:30px; height:30px; background:transparent; color:var(--color-secondary); font-weight:bold; cursor:pointer;">+</button>
                     ` : `
-                        <button onclick="eliminarDelCarrito(${index})" style="background:#ffccd8; border:none; border-radius:50%; width:30px; height:30px; color:#ff477e; font-weight:bold; cursor:pointer;">X</button>
+                        <button onclick="eliminarDelCarrito(${index})" style="background:var(--color-border); border:none; border-radius:50%; width:30px; height:30px; color:var(--color-secondary); font-weight:bold; cursor:pointer;">X</button>
                     `}
                 </div>
             </div>
-            <div style="color:#ff477e; font-weight:bold; margin-bottom:10px;">$${precioItem.toLocaleString('es-AR')}</div>
+            <div style="color:var(--color-secondary); font-weight:bold; margin-bottom:10px;">$${precioItem.toLocaleString('es-AR')}</div>
             ${generarSelectores(p, index)}
         </div>`;
     });
@@ -136,51 +136,53 @@ function renderizarCarrito() {
 
 function generarSelectores(p, index) {
     let selectores = "";
+    // Estilo base reutilizable para los selectores que se adapta al modo oscuro automáticamente
+    const estiloSelect = `width:100%; padding:8px; margin-bottom:5px; border:1px solid var(--color-border); border-radius:var(--radius-sm); background:var(--color-bg-card); color:var(--color-text-main); font-family: 'Outfit', sans-serif;`;
 
     if (p.tipo === "helado") {
-        selectores += `<div style="font-size:11px; color:#888; margin-bottom:5px;">SABORES (Elegí ${p.tope}):</div>`;
+        selectores += `<div style="font-size:11px; color:var(--color-text-muted, #888); margin-bottom:5px;">SABORES (Elegí ${p.tope}):</div>`;
         selectores += `<div style="max-height: 180px; overflow-y: auto; padding-right: 5px;">`;
         for (let i = 0; i < p.tope; i++) {
             selectores += `
-            <select onchange="guardarGusto(${index}, ${i}, this.value)" style="width:100%; padding:8px; margin-bottom:5px; border:1px solid #ffccd8; border-radius:8px; background:#fff;">
-                <option value="" disabled ${p.gustos[i] === "" ? 'selected' : ''} style="color:#aaa;">Gusto ${i + 1}</option>
-                ${listaSaboresHelados.map(s => `<option value="${s}" ${p.gustos[i] === s ? 'selected' : ''}>${s}</option>`).join('')}
+            <select onchange="guardarGusto(${index}, ${i}, this.value)" style="${estiloSelect}">
+                <option value="" disabled ${p.gustos[i] === "" ? 'selected' : ''} style="color:var(--color-text-muted);">Gusto ${i + 1}</option>
+                ${listaSaboresHelados.map(s => `<option value="${s}" ${p.gustos[i] === s ? 'selected' : ''} style="background:var(--color-bg-card); color:var(--color-text-main);">${s}</option>`).join('')}
             </select>`;
         }
         selectores += `</div>`;
     } 
     else if (p.tipo === "milkshake") {
         selectores += `
-        <div style="font-size:11px; color:#888; margin-bottom:5px;">SABOR DE MILKSHAKE:</div>
-        <select onchange="guardarGusto(${index}, 0, this.value)" style="width:100%; padding:8px; margin-bottom:5px; border:1px solid #ffccd8; border-radius:8px; background:#fff;">
-            <option value="" disabled ${p.gustos[0] === "" ? 'selected' : ''} style="color:#aaa;">Elegí un sabor</option>
-            ${listaSaboresMilkshakes.map(s => `<option value="${s}" ${p.gustos[0] === s ? 'selected' : ''}>${s}</option>`).join('')}
+        <div style="font-size:11px; color:var(--color-text-muted, #888); margin-bottom:5px;">SABOR DE MILKSHAKE:</div>
+        <select onchange="guardarGusto(${index}, 0, this.value)" style="${estiloSelect}">
+            <option value="" disabled ${p.gustos[0] === "" ? 'selected' : ''} style="color:var(--color-text-muted);">Elegí un sabor</option>
+            ${listaSaboresMilkshakes.map(s => `<option value="${s}" ${p.gustos[0] === s ? 'selected' : ''} style="background:var(--color-bg-card); color:var(--color-text-main);">${s}</option>`).join('')}
         </select>`;
     }
     else if (p.tipo === "cafe") {
         selectores += `
-        <select onchange="actualizarExtra(${index}, 'variedad', this.value)" style="width:100%; padding:8px; margin-bottom:5px; border:1px solid #ffccd8; border-radius:8px; background:#fff;">
-            <option value="" disabled ${!p.variedad ? 'selected' : ''} style="color:#aaa;">Tipo de café</option>
-            ${variedadesCafe.map(v => `<option value="${v}" ${p.variedad === v ? 'selected' : ''}>${v}</option>`).join('')}
+        <select onchange="actualizarExtra(${index}, 'variedad', this.value)" style="${estiloSelect}">
+            <option value="" disabled ${!p.variedad ? 'selected' : ''} style="color:var(--color-text-muted);">Tipo de café</option>
+            ${variedadesCafe.map(v => `<option value="${v}" ${p.variedad === v ? 'selected' : ''} style="background:var(--color-bg-card); color:var(--color-text-main);">${v}</option>`).join('')}
         </select>
-        <select onchange="actualizarExtra(${index}, 'leche', this.value)" style="width:100%; padding:8px; margin-bottom:5px; border:1px solid #ffccd8; border-radius:8px; background:#fff;">
-            <option value="" disabled ${!p.leche ? 'selected' : ''} style="color:#aaa;">Tipo de leche</option>
-            ${tiposLeche.map(l => `<option value="${l}" ${p.leche === l ? 'selected' : ''}>${l}</option>`).join('')}
+        <select onchange="actualizarExtra(${index}, 'leche', this.value)" style="${estiloSelect}">
+            <option value="" disabled ${!p.leche ? 'selected' : ''} style="color:var(--color-text-muted);">Tipo de leche</option>
+            ${tiposLeche.map(l => `<option value="${l}" ${p.leche === l ? 'selected' : ''} style="background:var(--color-bg-card); color:var(--color-text-main);">${l}</option>`).join('')}
         </select>`;
     }
     else if (p.tipo === "chocolate") {
         selectores += `
-        <select onchange="actualizarExtra(${index}, 'leche', this.value)" style="width:100%; padding:8px; margin-bottom:5px; border:1px solid #ffccd8; border-radius:8px; background:#fff;">
-            <option value="" disabled ${!p.leche ? 'selected' : ''} style="color:#aaa;">Tipo de leche</option>
-            ${tiposLeche.map(l => `<option value="${l}" ${p.leche === l ? 'selected' : ''}>${l}</option>`).join('')}
+        <select onchange="actualizarExtra(${index}, 'leche', this.value)" style="${estiloSelect}">
+            <option value="" disabled ${!p.leche ? 'selected' : ''} style="color:var(--color-text-muted);">Tipo de leche</option>
+            ${tiposLeche.map(l => `<option value="${l}" ${p.leche === l ? 'selected' : ''} style="background:var(--color-bg-card); color:var(--color-text-main);">${l}</option>`).join('')}
         </select>`;
     }
     else if (p.tipo === "salsa") {
         selectores += `
-        <div style="font-size:11px; color:#888; margin-bottom:5px;">SABOR DE LA SALSA:</div>
-        <select onchange="guardarGusto(${index}, 0, this.value)" style="width:100%; padding:8px; margin-bottom:5px; border:1px solid #ffccd8; border-radius:8px; background:#fff;">
-            <option value="" disabled ${p.gustos[0] === "" ? 'selected' : ''} style="color:#aaa;">Elegí un sabor</option>
-            ${listaSaboresSalsas.map(s => `<option value="${s}" ${p.gustos[0] === s ? 'selected' : ''}>${s}</option>`).join('')}
+        <div style="font-size:11px; color:var(--color-text-muted, #888); margin-bottom:5px;">SABOR DE LA SALSA:</div>
+        <select onchange="guardarGusto(${index}, 0, this.value)" style="${estiloSelect}">
+            <option value="" disabled ${p.gustos[0] === "" ? 'selected' : ''} style="color:var(--color-text-muted);">Elegí un sabor</option>
+            ${listaSaboresSalsas.map(s => `<option value="${s}" ${p.gustos[0] === s ? 'selected' : ''} style="background:var(--color-bg-card); color:var(--color-text-main);">${s}</option>`).join('')}
         </select>`;
     }
     return selectores;
