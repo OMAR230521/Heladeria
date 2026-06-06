@@ -180,11 +180,17 @@ window.confirmarYEnviar = function() {
     // Cerramos el mensaje con el gran total a pagar
     m += `💰 *TOTAL GENERAL: $${datosPedido.total}*`;
 
-    // Guardamos el mensaje final de forma temporal
-    localStorage.setItem('mensaje_whatsapp_listo', m);
+   // Guardamos una copia por si querés revisarla después
+localStorage.setItem('mensaje_whatsapp_listo', m);
 
-    // Te aviso en pantalla que el texto se armó perfecto
-    alert("📝 ¡Texto de WhatsApp estructurado con éxito! Avisame y hacemos el despegue final.");
+// Número de WhatsApp de Dolce Tropea
+const telefonoNegocio = "5492975148986";
+
+// Abrimos WhatsApp con el pedido cargado
+const enlaceWhatsapp =
+    `https://wa.me/${telefonoNegocio}?text=${encodeURIComponent(m)}`;
+
+window.open(enlaceWhatsapp, '_blank');
 }
 
         // Función para copiar el CBU y Alias al portapapeles automáticamente
