@@ -1,33 +1,58 @@
 // --- 1. BASES DE DATOS ---
 const listaSaboresHelados = ["MOUSSE DE CHOCOLATE", "MOUSSE DE FRAMBUESA", "MOUSSE DE LEMON PIE", "MOUSSE DE MARACUYA", "MOUSSE DE LIMON", "ANANA AL AGUA", "DURAZNO AL AGUA", "FRANUI AL AGUA", "FRUTILLA AL AGUA", "FRUTOS PATAGONICOS AL AGUA", "LIMON AL AGUA", "LIMON, JENGIBRE Y MENTA(AL AGUA)", "LIMON, JENGIBRE Y ALBAHACA(AL AGUA)", "DULCE DE LECHE BOMBON", "DULCE DE LECHE BROWNIE", "DULCE DE LECHE CLASICO", "CHOCOTORTA", "COCO CON DULCE DE LECHE", "DULCE DE LECHE CRUNCH", "FLAN CON DULCE DE LECHE", "DULCE DE LECHE GRANIZADO", "SUPER DULCE DE LECHE", "CHOCOLATE BLANCO", "CHOCOLATE BLOCK", "CHOCOLATE BUENARDO", "CHOCOLATE CLASICO", "CHOCOLATE CON ALMENDRAS", "CHOCOLATE CON PASAs", "CHOCOLATE DOLCE BAJON", "CHOCOLATE HAVANNA", "CHOCOLATE KINDER", "CHOCOLATE MARROC", "CHOCOLATE MARQUISE", "CHOCOLATE NUCCIOLATO", "CHOCOLATE NUTELLA", "CHOCOLATE ROCHER", "CHOCOLATE SUIZO", "BANANITA DOLCA", "BANANA SPLIT", "BANANA SPLIT CON NUEZ", "BANANA CON NUTELLA", "CREMA BON O BOM", "CADBURY DE FRUTILLA", "CEREZA A LA CREMA", "CHEESECAKE", "CREMA DE ARANDANOS", "CREMA DEL CIELO", "CREMA OREO", "CREMA RUSA", "FORNITE", "FRAMTTINO", "FRAMBUESA CON PISTACHO", "FRUTOS DEL BOSQUE", "GRANIZADo", "KINOTOS AL WHISKY", "MANTECOL", "MASCARPONE CON FRUTOS ROJOS", "MENTA GRANIZADA", "PISTACHO", "TIRAMISU", "FRAMBUESA AL AGUA", "SAMBAYON ITALIANO", "MOUSSE DE LIMON HAVANNA", "FRAMBUESA A LA CREMA", "NONA VICENTA", "Açaí", "SCALONETA"];
+
+const listaSaboresMilkshakes = ["Oreo", "Bon o bon", "Chocolate dubai", "Pistacho", "Ferrero rocher", "Frapuchino americana", "Frapuccino dulce de leche", "Dolce valentino", "Dulce de leche", "Belga furioso", "Chocolinas", "Creza silvestre"];
+
 const tiposLeche = ["Entera", "Descremada", "Almendra"];
+
 const variedadesCafe = ["Capuccino", "Latte", "Flat white", "Cortado", "Espresso simple", "Espresso doble", "Americano simple", "Americano doble"];
+
+const listaSaboresSalsas = ["Chocolate", "Frutilla", "Frutos patagonicos", "Dulce de leche", "Caramelo"];
+
 let carrito = JSON.parse(localStorage.getItem('carrito')) || [];
 
-// --- 2. FUNCIONES DE LÓGICA ---
-function agregarAlCarrito(nombre, precio) {
+// --- 2. FUNCIONES DE LÓGICA (GLOBALES) ---
+window.agregarAlCarrito = function(nombre, precio) {
     let tipo = "otro";
     let tope = 0;
     
-    // Clasificación
+    // --- CLASIFICACIÓN ---
     if (nombre.includes("1 Kg") || nombre.includes("1/2 Kg") || nombre.includes("1/4 Kg") || nombre.includes("Promo 2x1")) {
         tipo = "helado";
         if (nombre.includes("1 Kg")) tope = 4;
         else if (nombre.includes("1/2 Kg")) tope = 3;
         else if (nombre.includes("1/4 Kg")) tope = 2;
         else if (nombre.includes("Promo 2x1")) tope = 4;
-    }   else if (nombre.toLowerCase().includes("café")) {
+    } 
+    else if (nombre.toLowerCase().includes("batido de 3 bochas")) {
+        tipo = "helado";
+        tope = 3;
+    } 
+    else if (nombre.toLowerCase().includes("milkshake")) {
+        tipo = "milkshake";
+        tope = 1;
+    }
+    else if (nombre.toLowerCase().includes("doble sabor")) {
+        tipo = "helado";
+        tope = 8; 
+    } 
+    else if (nombre.toLowerCase().includes("café")) {
         tipo = "cafe";
-    } else if (nombre.toLowerCase().includes("mamuschka")) {
+    } 
+    else if (nombre.toLowerCase().includes("mamuschka")) {
         tipo = "chocolate";
     }
+    else if (nombre.toLowerCase().includes("mini salsas") || nombre.toLowerCase().includes("salsa")) {
+        tipo = "salsa";
+        tope = 1;
+    }
 
-    // Aseguramos que el precio sea un número real
     let precioNumerico = parseFloat(precio) || 0;
 
-    // LÓGICA DE AGRUPACIÓN:
-    // Si es helado, ID único (no se agrupan). Si es "otro", ID es el nombre (se agrupan).
-    let id = (tipo === "helado") ? Date.now() : nombre;
+   
+    const requierePersonalizar = (tipo === "helado" || tipo === "milkshake" || tipo === "cafe" || tipo === "chocolate" || tipo === "salsa");
+    let id = requierePersonalizar ? Date.now() : nombre;
+    
     let productoExistente = carrito.find(item => item.id === id);
 
     if (productoExistente) {
@@ -36,29 +61,31 @@ function agregarAlCarrito(nombre, precio) {
         carrito.push({
             id: id,
             nombre: nombre,
-            precioBase: precioNumerico, // Aquí nos aseguramos de guardar el precio
+            precioBase: precioNumerico,
             tipo: tipo,
             tope: tope,
-            cantidad: 1, // Definimos cantidad inicial siempre
-            gustos: Array(tope).fill("")
+            cantidad: 1,
+            gustos: Array(tope).fill(""),
+            variedad: "", // Inicializa vacío para forzar la selección
+            leche: ""     // Inicializa vacío para forzar la selección
         });
     }
     guardarYRenderizar();
 }
 
-// --- 2. FUNCIONES DE APOYO ---
-function cambiarCantidad(index, delta) {
+// --- 3. FUNCIONES DE APOYO (GLOBALES) ---
+window.cambiarCantidad = function(index, delta) {
     carrito[index].cantidad += delta;
     if (carrito[index].cantidad <= 0) carrito.splice(index, 1);
     guardarYRenderizar();
 }
 
-function eliminarDelCarrito(index) {
+window.eliminarDelCarrito = function(index) {
     carrito.splice(index, 1);
     guardarYRenderizar();
 }
 
-function actualizarExtra(index, campo, valor) {
+window.actualizarExtra = function(index, campo, valor) {
     carrito[index][campo] = valor;
     localStorage.setItem('carrito', JSON.stringify(carrito));
 }
@@ -69,12 +96,7 @@ function guardarYRenderizar() {
     actualizarContador();
 }
 
-// --- 3. RENDERIZADO CORREGIDO ---
-
-// Definimos las opciones que faltan
-const variedadesCafe = ["Capuccino", "Latte", "Flat white", "Cortado", "Espresso simple", "Espresso doble", "Americano simple", "Americano doble"];
-const tiposLeche = ["Entera", "Descremada", "Almendra"];
-
+// --- 4. RENDERIZADO (ADAPTADO A MODO OSCURO) ---
 function renderizarCarrito() {
     const container = document.getElementById('cart-items');
     const totalContainer = document.getElementById('cart-total');
@@ -87,20 +109,23 @@ function renderizarCarrito() {
         let precioItem = p.precioBase * p.cantidad;
         totalGeneral += precioItem;
 
+        const tieneSabores = (p.tipo === 'helado' || p.tipo === 'milkshake' || p.tipo === 'cafe' || p.tipo === 'chocolate' || p.tipo === 'salsa');
+
+        // Cambiado: background usa var(--color-bg-base), bordes var(--color-border) y texto var(--color-text-main)
         html += `
-        <div style="padding:15px; border-bottom:1px solid #eee; background:#fff; margin-bottom: 5px; border-radius: 8px;">
+        <div style="padding:15px; border-bottom:1px solid var(--color-border); background: var(--color-bg-base); margin-bottom: 8px; border-radius: var(--radius-sm); color: var(--color-text-main);">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-                <div style="font-weight:bold; font-size: 15px;">${p.nombre} ${p.tipo !== 'helado' ? `(x${p.cantidad})` : ''}</div>
+                <div style="font-weight:bold; font-size: 15px;">${p.nombre} ${!tieneSabores ? `(x${p.cantidad})` : ''}</div>
                 <div style="display:flex; gap:5px;">
-                    ${p.tipo !== 'helado' ? `
-                        <button onclick="cambiarCantidad(${index}, -1)" style="border:1px solid #ff477e; border-radius:5px; width:30px; height:30px;">-</button>
-                        <button onclick="cambiarCantidad(${index}, 1)" style="border:1px solid #ff477e; border-radius:5px; width:30px; height:30px;">+</button>
+                    ${!tieneSabores ? `
+                        <button onclick="cambiarCantidad(${index}, -1)" style="border:1px solid var(--color-secondary); border-radius:var(--radius-sm); width:30px; height:30px; background:transparent; color:var(--color-secondary); font-weight:bold; cursor:pointer;">-</button>
+                        <button onclick="cambiarCantidad(${index}, 1)" style="border:1px solid var(--color-secondary); border-radius:var(--radius-sm); width:30px; height:30px; background:transparent; color:var(--color-secondary); font-weight:bold; cursor:pointer;">+</button>
                     ` : `
-                        <button onclick="eliminarDelCarrito(${index})" style="background:#ffccd8; border:none; border-radius:50%; width:30px; height:30px;">X</button>
+                        <button onclick="eliminarDelCarrito(${index})" style="background:var(--color-border); border:none; border-radius:50%; width:30px; height:30px; color:var(--color-secondary); font-weight:bold; cursor:pointer;">X</button>
                     `}
                 </div>
             </div>
-            <div style="color:#ff477e; font-weight:bold; margin-bottom:10px;">$${precioItem.toLocaleString('es-AR')}</div>
+            <div style="color:var(--color-secondary); font-weight:bold; margin-bottom:10px;">$${precioItem.toLocaleString('es-AR')}</div>
             ${generarSelectores(p, index)}
         </div>`;
     });
@@ -111,54 +136,165 @@ function renderizarCarrito() {
 
 function generarSelectores(p, index) {
     let selectores = "";
+    // Estilo base reutilizable para los selectores que se adapta al modo oscuro automáticamente
+    const estiloSelect = `width:100%; padding:8px; margin-bottom:5px; border:1px solid var(--color-border); border-radius:var(--radius-sm); background:var(--color-bg-card); color:var(--color-text-main); font-family: 'Outfit', sans-serif;`;
 
     if (p.tipo === "helado") {
-        selectores += `<div style="font-size:11px; color:#888; margin-bottom:5px;">SABORES (Elegí ${p.tope}):</div>`;
+        selectores += `<div style="font-size:11px; color:var(--color-text-muted, #888); margin-bottom:5px;">SABORES (Elegí ${p.tope}):</div>`;
+        selectores += `<div style="max-height: 180px; overflow-y: auto; padding-right: 5px;">`;
         for (let i = 0; i < p.tope; i++) {
             selectores += `
-            <select onchange="guardarGusto(${index}, ${i}, this.value)" style="width:100%; padding:8px; margin-bottom:5px; border:1px solid #ffccd8; border-radius:8px; background:#fff;">
-                <option value="">Gusto ${i + 1}</option>
-                ${listaSaboresHelados.map(s => `<option value="${s}" ${p.gustos[i] === s ? 'selected' : ''}>${s}</option>`).join('')}
+            <select onchange="guardarGusto(${index}, ${i}, this.value)" style="${estiloSelect}">
+                <option value="" disabled ${p.gustos[i] === "" ? 'selected' : ''} style="color:var(--color-text-muted);">Gusto ${i + 1}</option>
+                ${listaSaboresHelados.map(s => `<option value="${s}" ${p.gustos[i] === s ? 'selected' : ''} style="background:var(--color-bg-card); color:var(--color-text-main);">${s}</option>`).join('')}
             </select>`;
         }
+        selectores += `</div>`;
     } 
+    else if (p.tipo === "milkshake") {
+        selectores += `
+        <div style="font-size:11px; color:var(--color-text-muted, #888); margin-bottom:5px;">SABOR DE MILKSHAKE:</div>
+        <select onchange="guardarGusto(${index}, 0, this.value)" style="${estiloSelect}">
+            <option value="" disabled ${p.gustos[0] === "" ? 'selected' : ''} style="color:var(--color-text-muted);">Elegí un sabor</option>
+            ${listaSaboresMilkshakes.map(s => `<option value="${s}" ${p.gustos[0] === s ? 'selected' : ''} style="background:var(--color-bg-card); color:var(--color-text-main);">${s}</option>`).join('')}
+        </select>`;
+    }
     else if (p.tipo === "cafe") {
         selectores += `
-        <select onchange="actualizarExtra(${index}, 'variedad', this.value)" style="width:100%; padding:8px; margin-bottom:5px; border:1px solid #ffccd8; border-radius:8px;">
-            ${variedadesCafe.map(v => `<option value="${v}" ${p.variedad === v ? 'selected' : ''}>${v}</option>`).join('')}
+        <select onchange="actualizarExtra(${index}, 'variedad', this.value)" style="${estiloSelect}">
+            <option value="" disabled ${!p.variedad ? 'selected' : ''} style="color:var(--color-text-muted);">Tipo de café</option>
+            ${variedadesCafe.map(v => `<option value="${v}" ${p.variedad === v ? 'selected' : ''} style="background:var(--color-bg-card); color:var(--color-text-main);">${v}</option>`).join('')}
         </select>
-        <select onchange="actualizarExtra(${index}, 'leche', this.value)" style="width:100%; padding:8px; margin-bottom:5px; border:1px solid #ffccd8; border-radius:8px;">
-            ${tiposLeche.map(l => `<option value="${l}" ${p.leche === l ? 'selected' : ''}>${l}</option>`).join('')}
+        <select onchange="actualizarExtra(${index}, 'leche', this.value)" style="${estiloSelect}">
+            <option value="" disabled ${!p.leche ? 'selected' : ''} style="color:var(--color-text-muted);">Tipo de leche</option>
+            ${tiposLeche.map(l => `<option value="${l}" ${p.leche === l ? 'selected' : ''} style="background:var(--color-bg-card); color:var(--color-text-main);">${l}</option>`).join('')}
         </select>`;
     }
     else if (p.tipo === "chocolate") {
         selectores += `
-        <select onchange="actualizarExtra(${index}, 'leche', this.value)" style="width:100%; padding:8px; margin-bottom:5px; border:1px solid #ffccd8; border-radius:8px;">
-            ${tiposLeche.map(l => `<option value="${l}" ${p.leche === l ? 'selected' : ''}>${l}</option>`).join('')}
+        <select onchange="actualizarExtra(${index}, 'leche', this.value)" style="${estiloSelect}">
+            <option value="" disabled ${!p.leche ? 'selected' : ''} style="color:var(--color-text-muted);">Tipo de leche</option>
+            ${tiposLeche.map(l => `<option value="${l}" ${p.leche === l ? 'selected' : ''} style="background:var(--color-bg-card); color:var(--color-text-main);">${l}</option>`).join('')}
+        </select>`;
+    }
+    else if (p.tipo === "salsa") {
+        selectores += `
+        <div style="font-size:11px; color:var(--color-text-muted, #888); margin-bottom:5px;">SABOR DE LA SALSA:</div>
+        <select onchange="guardarGusto(${index}, 0, this.value)" style="${estiloSelect}">
+            <option value="" disabled ${p.gustos[0] === "" ? 'selected' : ''} style="color:var(--color-text-muted);">Elegí un sabor</option>
+            ${listaSaboresSalsas.map(s => `<option value="${s}" ${p.gustos[0] === s ? 'selected' : ''} style="background:var(--color-bg-card); color:var(--color-text-main);">${s}</option>`).join('')}
         </select>`;
     }
     return selectores;
 }
 
-// Nueva función para guardar las elecciones de café/chocolate
-function actualizarExtra(index, campo, valor) {
-    carrito[index][campo] = valor;
-    localStorage.setItem('carrito', JSON.stringify(carrito));
-}
-
-function toggleCart() {
+window.toggleCart = function() {
     const modal = document.getElementById('cart-modal');
     if (modal) {
         modal.classList.toggle('hidden');
     }
 }
 
+window.toggleDireccion = function() {
+    const campoDireccion = document.getElementById('campo-direccion');
+    if (!campoDireccion) return;
+
+    // Buscamos cuál de las dos opciones redondas está seleccionada en el HTML
+    const opciones = document.getElementsByName('tipo-entrega');
+    let valorSeleccionado = "";
+    
+    for (let i = 0; i < opciones.length; i++) {
+        if (opciones[i].checked) {
+            valorSeleccionado = opciones[i].value;
+            break;
+        }
+    }
+
+    if (valorSeleccionado === 'delivery') {
+        // Si elige "Envío a Domicilio", le sacamos la clase que lo oculta
+        campoDireccion.classList.remove('hidden');
+    } else {
+        // Si elige "Retiro en Local", lo volvemos a ocultar
+        campoDireccion.classList.add('hidden');
+    }
+}
+
 function actualizarContador() {
     const contador = document.getElementById('cart-count');
-    if (contador) contador.innerText = carrito.length;
+    if (!contador) return;
+    
+    // Suma las cantidades reales de cada producto acumulado
+    let totalUnidades = carrito.reduce((acumulador, producto) => acumulador + producto.cantidad, 0);
+    
+    contador.innerText = totalUnidades;
 }
+
+window.guardarGusto = function(index, gustoIndex, valor) {
+    carrito[index].gustos[gustoIndex] = valor;
+    localStorage.setItem('carrito', JSON.stringify(carrito));
+};
 
 window.addEventListener('DOMContentLoaded', () => {
     actualizarContador();
     renderizarCarrito();
 });
+
+// --- 5. VALIDACIÓN Y REDIRECCIÓN A PANTALLA DE PAGO SIMULADA ---
+window.procesarPago = function() {
+    // 1. Capturamos los datos que escribió el usuario en el formulario
+    const nombre = document.getElementById('cliente-nombre')?.value.trim();
+    const apellido = document.getElementById('cliente-apellido')?.value.trim();
+    const telefono = document.getElementById('cliente-telefono')?.value.trim();
+    const direccion = document.getElementById('cliente-direccion')?.value.trim();
+    
+    // Buscamos cuál opción de entrega quedó seleccionada
+    const opcionesEntrega = document.getElementsByName('tipo-entrega');
+    let tipoEntrega = 'retiro';
+    for (let i = 0; i < opcionesEntrega.length; i++) {
+        if (opcionesEntrega[i].checked) {
+            tipoEntrega = opcionesEntrega[i].value;
+            break;
+        }
+    }
+
+    // 2. Validaciones básicas: si falta algún dato principal, frenamos acá
+    if (!nombre || !apellido || !telefono) {
+        alert("⚠️ Por favor, completá tu Nombre, Apellido y Teléfono antes de continuar.");
+        return;
+    }
+
+    // Si es delivery y no puso dirección, lo frenamos
+    if (tipoEntrega === 'delivery' && !direccion) {
+        alert("⚠️ Seleccionaste Envío a Domicilio. Por favor, ingresá tu dirección.");
+        return;
+    }
+
+    // 3. Generamos el Número de Pedido automático (un número aleatorio de 4 dígitos)
+    const numeroPedido = "DT-" + Math.floor(1000 + Math.random() * 9000);
+
+    // 4. Obtenemos el total acumulado en el carrito
+    const totalElemento = document.getElementById('cart-total');
+    const totalMonto = totalElemento ? totalElemento.innerText : "0";
+
+    // 5. Empaquetamos absolutamente toda la información para pasarla a la otra pestaña
+    const datosPedido = {
+        idPedido: numeroPedido,
+        cliente: {
+            nombre: nombre,
+            apellido: apellido,
+            telefono: telefono
+        },
+        entrega: {
+            tipo: tipoEntrega,
+            direccion: tipoEntrega === 'delivery' ? direccion : 'Retiro en Local'
+        },
+        total: totalMonto,
+        productos: carrito // Pasamos tu array global con los helados y sabores elegidos
+    };
+
+    // Guardamos este paquete en el almacenamiento local para que la nueva pestaña lo pueda leer
+    localStorage.setItem('pedido_pendiente_pago', JSON.stringify(datosPedido));
+
+    // 6. ¡A la pestaña de pago! Abre un archivo nuevo llamado pagar.html en otra solapa
+    window.open('pagar.html', '_blank');
+}
