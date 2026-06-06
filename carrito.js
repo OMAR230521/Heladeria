@@ -4,7 +4,11 @@ const listaSaboresHelados = ["MOUSSE DE CHOCOLATE", "MOUSSE DE FRAMBUESA", "MOUS
 const listaSaboresMilkshakes = ["Oreo", "Bon o bon", "Chocolate dubai", "Pistacho", "Ferrero rocher", "Frapuchino americana", "Frapuccino dulce de leche", "Dolce valentino", "Dulce de leche", "Belga furioso", "Chocolinas", "Creza silvestre"];
 
 const tiposLeche = ["Entera", "Descremada", "Almendra"];
+
 const variedadesCafe = ["Capuccino", "Latte", "Flat white", "Cortado", "Espresso simple", "Espresso doble", "Americano simple", "Americano doble"];
+
+const listaSaboresSalsas = ["Chocolate", "Frutilla", "Frutos patagonicos", "Dulce de leche", "Caramelo"];
+
 let carrito = JSON.parse(localStorage.getItem('carrito')) || [];
 
 // --- 2. FUNCIONES DE LÓGICA (GLOBALES) ---
@@ -38,13 +42,15 @@ window.agregarAlCarrito = function(nombre, precio) {
     else if (nombre.toLowerCase().includes("mamuschka")) {
         tipo = "chocolate";
     }
+    else if (nombre.toLowerCase().includes("mini salsas")) {
+        tipo = "salsa";
+        tope = 1;
+    }
 
     let precioNumerico = parseFloat(precio) || 0;
 
-    // LÓGICA DE AGRUPACIÓN ACTUALIZADA:
-    // Ahora café y chocolate también generan tarjetas independientes (ID único por tiempo)
-    // para que no se agrupen forzadamente y sus opciones no se pisen.
-    const requierePersonalizar = (tipo === "helado" || tipo === "milkshake" || tipo === "cafe" || tipo === "chocolate");
+   
+    const requierePersonalizar = (tipo === "helado" || tipo === "milkshake" || tipo === "cafe" || tipo === "chocolate" || tipo === "salsa");
     let id = requierePersonalizar ? Date.now() : nombre;
     
     let productoExistente = carrito.find(item => item.id === id);
@@ -167,6 +173,14 @@ function generarSelectores(p, index) {
         <select onchange="actualizarExtra(${index}, 'leche', this.value)" style="width:100%; padding:8px; margin-bottom:5px; border:1px solid #ffccd8; border-radius:8px; background:#fff;">
             <option value="" disabled ${!p.leche ? 'selected' : ''} style="color:#aaa;">Tipo de leche</option>
             ${tiposLeche.map(l => `<option value="${l}" ${p.leche === l ? 'selected' : ''}>${l}</option>`).join('')}
+        </select>`;
+    }
+    else if (p.tipo === "salsa") {
+        selectores += `
+        <div style="font-size:11px; color:#888; margin-bottom:5px;">SABOR DE LA SALSA:</div>
+        <select onchange="guardarGusto(${index}, 0, this.value)" style="width:100%; padding:8px; margin-bottom:5px; border:1px solid #ffccd8; border-radius:8px; background:#fff;">
+            <option value="" disabled ${p.gustos[0] === "" ? 'selected' : ''} style="color:#aaa;">Elegí un sabor</option>
+            ${listaSaboresSalsas.map(s => `<option value="${s}" ${p.gustos[0] === s ? 'selected' : ''}>${s}</option>`).join('')}
         </select>`;
     }
     return selectores;
