@@ -94,6 +94,23 @@
             </label>
         </div>
 
+        <!-- Bloque dinámico para mostrar los datos de transferencia o Mercado Pago -->
+<div id="detalles-pago-caja" class="resumen-caja" style="margin-top: 15px; border-left: 4px solid var(--color-accent-gold);">
+    <div id="contenido-transferencia">
+        <p style="margin-bottom: 8px;"><strong>Datos para la Transferencia:</strong></p>
+        <p><strong>Banco:</strong> Banco Galicia</p>
+        <p><strong>CBU:</strong> <span id="cbu-texto">0070123420000012345678</span></p>
+        <p><strong>Alias:</strong> <span id="alias-texto">omi.23</span></p>
+        <button onclick="copiarDatos()" class="btn-secondary" style="padding: 6px 12px; font-size: 0.8rem; border-radius: var(--radius-sm); margin-top: 8px; width: auto; cursor: pointer;">
+            📋 Copiar CBU y Alias
+        </button>
+    </div>
+    <div id="contenido-mercadopago" class="hidden">
+        <p><strong>Mercado Pago:</strong></p>
+        <p style="font-size: 0.9rem; color: var(--color-text-muted);">Al confirmar el pedido, te enviaremos el link de pago o QR por WhatsApp para abonar al instante.</p>
+    </div>
+</div>
+        
         <!-- Botón de acción principal usando tus clases globales -->
         <button onclick="confirmarYEnviar()" class="btn btn-primary" style="width: 100%; justify-content: center; margin-top: 10px;">
             ✅ Confirmar Pago y Enviar WhatsApp
@@ -101,7 +118,104 @@
     </div>
 
     <script>
-        // Acá va a ir la lógica que lee los datos y arma el mensaje de WhatsApp
+        // 1. Traemos el paquete de datos desde la memoria de la web
+const datosPedido = JSON.parse(localStorage.getItem('pedido_pendiente_pago'));
+
+// Si por alguna razón no hay datos (entraron a la página directo), avisamos
+if (!datosPedido) {
+    alert("⚠️ No se encontró ningún pedido activo. Serás redirigido al inicio.");
+    window.location.href = "index.html";
+} else {
+    // 2. Si todo está bien, mostramos los datos en pantalla usando sus IDs
+    document.getElementById('resumen-id').innerText = datosPedido.idPedido;
+    document.getElementById('resumen-cliente').innerText = `${datosPedido.cliente.nombre} ${datosPedido.cliente.apellido}`;
+    document.getElementById('resumen-entrega').innerText = datosPedido.entrega.tipo === 'delivery' 
+        ? `Envío a: ${datosPedido.entrega.direccion}` 
+        : `Retiro en Local (N° de Pedido: ${datosPedido.idPedido})`;
+    document.getElementById('resumen-total').innerText = datosPedido.total;
+}
+
+// 3. Función principal para procesar la confirmación y armar el texto
+window.confirmarYEnviar = function() {
+    // Buscamos qué método de pago seleccionó el cliente
+    const opcionesPago = document.getElementsByName('metodo-pago');
+    let metodoSeleccionado = 'Transferencia';
+    for (let i = 0; i < opcionesPago.length; i++) {
+        if (opcionesPago[i].checked) {
+            metodoSeleccionado = opcionesPago[i].value;
+            break;
+        }
+    }
+
+    // Empezamos a construir el mensaje con formato para WhatsApp (negritas y emojis)
+    let m = `🍦 *DOLCE TROPEA - PEDIDO ${datosPedido.idPedido}* 🍦\n\n`;
+    m += `👤 *Cliente:* ${datosPedido.cliente.nombre} ${datosPedido.cliente.apellido}\n`;
+    m += `📍 *Entrega:* ${datosPedido.entrega.direccion}\n`;
+    m += `💳 *Pago:* ${metodoSeleccionado} (Simulado)\n\n`;
+    m += `🛒 *PRODUCTOS DE TU PEDIDO:*\n\n`;
+
+    // Recorremos el listado de productos empaquetados para desglosar sus opciones
+    datosPedido.productos.forEach(p => {
+        // Agregamos el nombre base del producto (ej: 1 Kg de Helado)
+        m += `• *${p.nombre}*`;
+        
+        // Si es helado, milkshake o salsa, listamos los gustos seleccionados sin dejar espacios vacíos
+        if (p.tipo === 'helado' || p.tipo === 'milkshake' || p.tipo === 'salsa') {
+            const gustosFiltrados = p.gustos.filter(g => g !== "");
+            if (gustosFiltrados.length > 0) {
+                m += `\n   _Sabores:_ ${gustosFiltrados.join(', ')}`;
+            }
+        } 
+        // Si es café, desglosamos la variedad y el tipo de leche
+        else if (p.tipo === 'cafe') {
+            m += `\n   _Variedad:_ ${p.variedad || 'Clásico'} | _Leche:_ ${p.leche || 'Entera'}`;
+        } 
+        // Si es chocolate, agregamos su tipo de leche
+        else if (p.tipo === 'chocolate') {
+            m += `\n   _Leche:_ ${p.leche || 'Entera'}`;
+        }
+        m += `\n\n`; // Espaciado entre productos
+    });
+
+    // Cerramos el mensaje con el gran total a pagar
+    m += `💰 *TOTAL GENERAL: $${datosPedido.total}*`;
+
+    // Guardamos el mensaje final de forma temporal
+    localStorage.setItem('mensaje_whatsapp_listo', m);
+
+    // Te aviso en pantalla que el texto se armó perfecto
+    alert("📝 ¡Texto de WhatsApp estructurado con éxito! Avisame y hacemos el despegue final.");
+}
+
+        // Función para copiar el CBU y Alias al portapapeles automáticamente
+window.copiarDatos = function() {
+    const cbu = document.getElementById('cbu-texto').innerText;
+    const alias = document.getElementById('alias-texto').innerText;
+    
+    const textoACopiar = `CBU: ${cbu}\nAlias: ${alias}`;
+    
+    navigator.clipboard.writeText(textoACopiar).then(() => {
+        alert("📌 ¡Datos copiados al portapapeles! Ya podés ir a tu homebanking a transferir.");
+    }).catch(err => {
+        alert("No se pudo copiar automáticamente, por favor seleccionalo manualmente.");
+    });
+}
+
+// Escuchamos los cambios en los botones redondos de pago para mostrar u ocultar los datos
+document.querySelectorAll('input[name="metodo-pago"]').forEach(radio => {
+    radio.addEventListener('change', function() {
+        const divTx = document.getElementById('contenido-transferencia');
+        const divMp = document.getElementById('contenido-mercadopago');
+        
+        if (this.value === 'Transferencia') {
+            divTx.classList.remove('hidden');
+            divMp.classList.add('hidden');
+        } else {
+            divTx.classList.add('hidden');
+            divMp.classList.remove('hidden');
+        }
+    });
+});
     </script>
 
 </body>
