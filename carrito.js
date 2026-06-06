@@ -238,3 +238,63 @@ window.addEventListener('DOMContentLoaded', () => {
     actualizarContador();
     renderizarCarrito();
 });
+
+// --- 5. VALIDACIÓN Y REDIRECCIÓN A PANTALLA DE PAGO SIMULADA ---
+window.procesarPago = function() {
+    // 1. Capturamos los datos que escribió el usuario en el formulario
+    const nombre = document.getElementById('cliente-nombre')?.value.trim();
+    const apellido = document.getElementById('cliente-apellido')?.value.trim();
+    const telefono = document.getElementById('cliente-telefono')?.value.trim();
+    const direccion = document.getElementById('cliente-direccion')?.value.trim();
+    
+    // Buscamos cuál opción de entrega quedó seleccionada
+    const opcionesEntrega = document.getElementsByName('tipo-entrega');
+    let tipoEntrega = 'retiro';
+    for (let i = 0; i < opcionesEntrega.length; i++) {
+        if (opcionesEntrega[i].checked) {
+            tipoEntrega = opcionesEntrega[i].value;
+            break;
+        }
+    }
+
+    // 2. Validaciones básicas: si falta algún dato principal, frenamos acá
+    if (!nombre || !apellido || !telefono) {
+        alert("⚠️ Por favor, completá tu Nombre, Apellido y Teléfono antes de continuar.");
+        return;
+    }
+
+    // Si es delivery y no puso dirección, lo frenamos
+    if (tipoEntrega === 'delivery' && !direccion) {
+        alert("⚠️ Seleccionaste Envío a Domicilio. Por favor, ingresá tu dirección.");
+        return;
+    }
+
+    // 3. Generamos el Número de Pedido automático (un número aleatorio de 4 dígitos)
+    const numeroPedido = "DT-" + Math.floor(1000 + Math.random() * 9000);
+
+    // 4. Obtenemos el total acumulado en el carrito
+    const totalElemento = document.getElementById('cart-total');
+    const totalMonto = totalElemento ? totalElemento.innerText : "0";
+
+    // 5. Empaquetamos absolutamente toda la información para pasarla a la otra pestaña
+    const datosPedido = {
+        idPedido: numeroPedido,
+        cliente: {
+            nombre: nombre,
+            apellido: apellido,
+            telefono: telefono
+        },
+        entrega: {
+            tipo: tipoEntrega,
+            direccion: tipoEntrega === 'delivery' ? direccion : 'Retiro en Local'
+        },
+        total: totalMonto,
+        productos: carrito // Pasamos tu array global con los helados y sabores elegidos
+    };
+
+    // Guardamos este paquete en el almacenamiento local para que la nueva pestaña lo pueda leer
+    localStorage.setItem('pedido_pendiente_pago', JSON.stringify(datosPedido));
+
+    // 6. ¡A la pestaña de pago! Abre un archivo nuevo llamado pagar.html en otra solapa
+    window.open('pagar.html', '_blank');
+}
