@@ -193,6 +193,30 @@ window.toggleCart = function() {
     }
 }
 
+window.toggleDireccion = function() {
+    const campoDireccion = document.getElementById('campo-direccion');
+    if (!campoDireccion) return;
+
+    // Buscamos cuál de las dos opciones redondas está seleccionada en el HTML
+    const opciones = document.getElementsByName('tipo-entrega');
+    let valorSeleccionado = "";
+    
+    for (let i = 0; i < opciones.length; i++) {
+        if (opciones[i].checked) {
+            valorSeleccionado = opciones[i].value;
+            break;
+        }
+    }
+
+    if (valorSeleccionado === 'delivery') {
+        // Si elige "Envío a Domicilio", le sacamos la clase que lo oculta
+        campoDireccion.classList.remove('hidden');
+    } else {
+        // Si elige "Retiro en Local", lo volvemos a ocultar
+        campoDireccion.classList.add('hidden');
+    }
+}
+
 function actualizarContador() {
     const contador = document.getElementById('cart-count');
     if (!contador) return;
