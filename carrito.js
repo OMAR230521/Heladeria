@@ -181,7 +181,12 @@ window.toggleCart = function() {
 
 function actualizarContador() {
     const contador = document.getElementById('cart-count');
-    if (contador) contador.innerText = carrito.length;
+    if (!contador) return;
+    
+    // Suma las cantidades reales de cada producto acumulado
+    let totalUnidades = carrito.reduce((acumulador, producto) => acumulador + producto.cantidad, 0);
+    
+    contador.innerText = totalUnidades;
 }
 
 window.guardarGusto = function(index, gustoIndex, valor) {
