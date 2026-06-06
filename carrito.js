@@ -42,7 +42,7 @@ window.agregarAlCarrito = function(nombre, precio) {
     else if (nombre.toLowerCase().includes("mamuschka")) {
         tipo = "chocolate";
     }
-    else if (nombre.toLowerCase().includes("mini salsas")) {
+    else if (nombre.toLowerCase().includes("mini salsas") || nombre.toLowerCase().includes("salsa")) {
         tipo = "salsa";
         tope = 1;
     }
@@ -109,8 +109,8 @@ function renderizarCarrito() {
         let precioItem = p.precioBase * p.cantidad;
         totalGeneral += precioItem;
 
-        // Quitamos los botones +/- de café y chocolate para que cada uno actúe de forma independiente.
-        const tieneSabores = (p.tipo === 'helado' || p.tipo === 'milkshake' || p.tipo === 'cafe' || p.tipo === 'chocolate');
+        // Quitamos los botones +/- 
+        const tieneSabores = (p.tipo === 'helado' || p.tipo === 'milkshake' || p.tipo === 'cafe' || p.tipo === 'chocolate' || p.tipo === 'salsa');
 
         html += `
         <div style="padding:15px; border-bottom:1px solid #eee; background:#fff; margin-bottom: 5px; border-radius: 8px;">
