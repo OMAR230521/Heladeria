@@ -26,7 +26,7 @@ window.agregarAlCarrito = function(nombre, precio) {
     } 
     else if (nombre.toLowerCase().includes("milkshake")) {
         tipo = "milkshake";
-        tope = 1; // 1 sola opción para elegir
+        tope = 1;
     }
     else if (nombre.toLowerCase().includes("doble sabor")) {
         tipo = "helado";
@@ -41,10 +41,10 @@ window.agregarAlCarrito = function(nombre, precio) {
 
     let precioNumerico = parseFloat(precio) || 0;
 
-    // LÓGICA DE AGRUPACIÓN SEPARADA:
-    // Si el producto requiere personalización (helados, batidos, milkshakes), 
-    // se fuerza un ID único con Date.now() para que nunca se agrupe ni se pisen los sabores.
-    const requierePersonalizar = (tipo === "helado" || tipo === "milkshake");
+    // LÓGICA DE AGRUPACIÓN ACTUALIZADA:
+    // Ahora café y chocolate también generan tarjetas independientes (ID único por tiempo)
+    // para que no se agrupen forzadamente y sus opciones no se pisen.
+    const requierePersonalizar = (tipo === "helado" || tipo === "milkshake" || tipo === "cafe" || tipo === "chocolate");
     let id = requierePersonalizar ? Date.now() : nombre;
     
     let productoExistente = carrito.find(item => item.id === id);
@@ -59,7 +59,9 @@ window.agregarAlCarrito = function(nombre, precio) {
             tipo: tipo,
             tope: tope,
             cantidad: 1,
-            gustos: Array(tope).fill("")
+            gustos: Array(tope).fill(""),
+            variedad: "", // Inicializa vacío para forzar la selección
+            leche: ""     // Inicializa vacío para forzar la selección
         });
     }
     guardarYRenderizar();
@@ -101,8 +103,8 @@ function renderizarCarrito() {
         let precioItem = p.precioBase * p.cantidad;
         totalGeneral += precioItem;
 
-        // Evitamos botones +/- si es helado, batido o milkshake. Así se manejan por separado con la X.
-        const tieneSabores = (p.tipo === 'helado' || p.tipo === 'milkshake');
+        // Quitamos los botones +/- de café y chocolate para que cada uno actúe de forma independiente.
+        const tieneSabores = (p.tipo === 'helado' || p.tipo === 'milkshake' || p.tipo === 'cafe' || p.tipo === 'chocolate');
 
         html += `
         <div style="padding:15px; border-bottom:1px solid #eee; background:#fff; margin-bottom: 5px; border-radius: 8px;">
@@ -151,16 +153,19 @@ function generarSelectores(p, index) {
     }
     else if (p.tipo === "cafe") {
         selectores += `
-        <select onchange="actualizarExtra(${index}, 'variedad', this.value)" style="width:100%; padding:8px; margin-bottom:5px; border:1px solid #ffccd8; border-radius:8px;">
+        <select onchange="actualizarExtra(${index}, 'variedad', this.value)" style="width:100%; padding:8px; margin-bottom:5px; border:1px solid #ffccd8; border-radius:8px; background:#fff;">
+            <option value="">Tipo de café</option>
             ${variedadesCafe.map(v => `<option value="${v}" ${p.variedad === v ? 'selected' : ''}>${v}</option>`).join('')}
         </select>
-        <select onchange="actualizarExtra(${index}, 'leche', this.value)" style="width:100%; padding:8px; margin-bottom:5px; border:1px solid #ffccd8; border-radius:8px;">
+        <select onchange="actualizarExtra(${index}, 'leche', this.value)" style="width:100%; padding:8px; margin-bottom:5px; border:1px solid #ffccd8; border-radius:8px; background:#fff;">
+            <option value="">Tipo de leche</option>
             ${tiposLeche.map(l => `<option value="${l}" ${p.leche === l ? 'selected' : ''}>${l}</option>`).join('')}
         </select>`;
     }
     else if (p.tipo === "chocolate") {
         selectores += `
-        <select onchange="actualizarExtra(${index}, 'leche', this.value)" style="width:100%; padding:8px; margin-bottom:5px; border:1px solid #ffccd8; border-radius:8px;">
+        <select onchange="actualizarExtra(${index}, 'leche', this.value)" style="width:100%; padding:8px; margin-bottom:5px; border:1px solid #ffccd8; border-radius:8px; background:#fff;">
+            <option value="">Tipo de leche</option>
             ${tiposLeche.map(l => `<option value="${l}" ${p.leche === l ? 'selected' : ''}>${l}</option>`).join('')}
         </select>`;
     }
