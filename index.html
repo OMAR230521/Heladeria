@@ -405,10 +405,10 @@
 <div id="cart-modal" class="cart-modal-overlay hidden">
   <div class="cart-modal-content">
     
-    <div class="cart-header">
-      <h2>Tu Pedido</h2>
-      <button class="close-cart" onclick="toggleCart()">❌</button>
-    </div>
+    <div class="cart-header" style="position: sticky; top: 0; z-index: 100; background: #ffffff; display: flex; justify-content: space-between; align-items: center; padding-bottom: 10px; border-bottom: 1px solid #eee;">
+  <h2 style="margin: 0;">Tu Pedido</h2>
+  <button class="close-cart" onclick="toggleCart()">❌</button>
+</div>
 
     <!-- Acá se van a inyectar los helados que elija -->
     <div id="cart-items" class="cart-items-container">
