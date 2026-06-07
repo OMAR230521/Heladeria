@@ -439,17 +439,16 @@ document.addEventListener('DOMContentLoaded', () => {
   const preloader = document.getElementById('preloader');
   
   if (preloader) {
-    // 🔍 Nos fijamos si el usuario ya entró a la web en esta sesión de navegación
+    // Si ya navegó por la página en esta sesión, no lo mostramos más para agilizar
     if (sessionStorage.getItem('dolce_tropea_loaded')) {
-      // Si ya entró antes, eliminamos el loader de inmediato para no molestar
       preloader.style.display = 'none';
     } else {
-      // Si es su primera vez, esperamos a que cargue toda la página (imágenes, fuentes, etc.)
+      // Primera vez: esperamos a que todo cargue y sincronizamos con las bochas
       window.addEventListener('load', () => {
         setTimeout(() => {
-          preloader.classList.add('fade-out'); // Desaparece suavemente
-          sessionStorage.setItem('dolce_tropea_loaded', 'true'); // Guarda el registro para que no vuelva a salir
-        }, 800); // 800ms de retraso para que se luzca el spinner en pantalla
+          preloader.classList.add('fade-out'); // Desvanecimiento suave
+          sessionStorage.setItem('dolce_tropea_loaded', 'true');
+        }, 2000); // 2 segundos exactos para que caigan las 3 bochas perfectamente
       });
     }
   }
