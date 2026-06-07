@@ -76,7 +76,6 @@ body {
     border-radius: 12px;
     cursor: pointer;
     border: 1px solid rgba(255,255,255,0.08);
-    transition: 0.2s;
 }
 
 .metodo-item:hover {
@@ -106,7 +105,9 @@ body {
     cursor: pointer;
 }
 
-.btn-confirmar-pedido {
+/* BOTONES */
+.btn-paso1,
+.btn-paso2 {
     width: 100%;
     margin-top: 20px;
     padding: 15px;
@@ -114,40 +115,17 @@ body {
     font-weight: 800;
     border: none;
     border-radius: 14px;
-    background: linear-gradient(135deg,#c8a24a,#f5d27a);
     cursor: pointer;
 }
 
-.payment-loading {
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.85);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 9999;
+.btn-paso1 {
+    background: linear-gradient(135deg,#c8a24a,#f5d27a);
+    color: #1a1a1a;
 }
 
-.loading-card {
-    background: #1b1b1f;
-    padding: 25px;
-    border-radius: 16px;
-    text-align: center;
-    width: 280px;
-}
-
-.spinner {
-    width: 45px;
-    height: 45px;
-    border: 4px solid #333;
-    border-top: 4px solid #c8a24a;
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-    margin: auto;
-}
-
-@keyframes spin {
-    100% { transform: rotate(360deg); }
+.btn-paso2 {
+    background: linear-gradient(135deg,#25D366,#128C7E);
+    color: white;
 }
 
 .hidden { display:none; }
@@ -184,12 +162,11 @@ body {
 
 </div>
 
-<!-- DETALLES DINAMICOS -->
+<!-- INFO PAGO -->
 <div class="info-pago-dinamica">
 
 <div id="contenido-transferencia">
     <div class="datos-banco">
-        <p><b>Banco:</b> Galicia</p>
         <p><b>CBU:</b> <span id="cbu-texto">0070123420000012345678</span></p>
         <p><b>Alias:</b> <span id="alias-texto">omi.23</span></p>
     </div>
@@ -200,29 +177,23 @@ body {
 </div>
 
 <div id="contenido-mercadopago" class="hidden">
-    <p>⚡ Te enviaremos el link por WhatsApp</p>
+    <p>⚡ Serás redirigido a Mercado Pago en el Paso 1</p>
 </div>
 
 </div>
 
-<button class="btn-confirmar-pedido" onclick="confirmarYEnviar()">
-Enviar pedido por WhatsApp
+<!-- BOTONES -->
+<button id="btnPaso1" class="btn-paso1" onclick="paso1()">
+1. Copiar Datos de Transferencia
+</button>
+
+<button id="btnPaso2" class="btn-paso2 hidden" onclick="confirmarYEnviar()">
+2. ¡Ya pagué! Enviar pedido por WhatsApp
 </button>
 
 </div>
 
-<!-- LOADING -->
-<div id="payment-loading" class="payment-loading hidden">
-<div class="loading-card">
-<div class="spinner"></div>
-<p>Procesando...</p>
-</div>
-</div>
-
 <script>
-/* =========================
-   PEDIDO
-========================= */
 let datosPedido = JSON.parse(localStorage.getItem("pedido_pendiente_pago"));
 
 if (!datosPedido) {
@@ -230,9 +201,7 @@ if (!datosPedido) {
     window.location.href = "index.html";
 }
 
-/* =========================
-   RENDER
-========================= */
+/* RENDER */
 document.getElementById("resumen-id").innerText = datosPedido.idPedido;
 document.getElementById("resumen-cliente").innerText =
 datosPedido.cliente.nombre + " " + datosPedido.cliente.apellido;
@@ -244,31 +213,53 @@ datosPedido.entrega.tipo === "delivery"
 
 document.getElementById("resumen-total").innerText = datosPedido.total;
 
-/* =========================
-   CAMBIO METODO PAGO
-========================= */
-document.querySelectorAll('input[name="metodo-pago"]').forEach(r => {
-r.addEventListener("change", function () {
-    let esT = this.value === "Transferencia";
-    document.getElementById("contenido-transferencia").classList.toggle("hidden", !esT);
-    document.getElementById("contenido-mercadopago").classList.toggle("hidden", esT);
-});
-});
-
-/* =========================
-   COPIAR DATOS
-========================= */
+/* COPIAR */
 function copiarDatos() {
 const cbu = document.getElementById("cbu-texto").innerText;
 const alias = document.getElementById("alias-texto").innerText;
-
 navigator.clipboard.writeText(`CBU: ${cbu}\nAlias: ${alias}`);
 alert("Datos copiados");
 }
 
-/* =========================
-   MENSAJE WHATSAPP (CORREGIDO COMPLETO)
-========================= */
+/* ===== 🔥 NUEVO: DETECCIÓN DE CAMBIO ===== */
+const btnPaso1 = document.getElementById("btnPaso1");
+
+document.querySelectorAll('input[name="metodo-pago"]').forEach(radio => {
+    radio.addEventListener("change", function () {
+
+        const esTransferencia = this.value === "Transferencia";
+
+        document.getElementById("contenido-transferencia")
+            .classList.toggle("hidden", !esTransferencia);
+
+        document.getElementById("contenido-mercadopago")
+            .classList.toggle("hidden", esTransferencia);
+
+        /* CAMBIO DINÁMICO DEL BOTÓN */
+        btnPaso1.innerText = esTransferencia
+            ? "1. Copiar Datos de Transferencia"
+            : "1. Ir a pagar a Mercado Pago";
+    });
+});
+
+/* PASO 1 */
+function paso1() {
+
+const metodo = document.querySelector('input[name="metodo-pago"]:checked').value;
+
+if (metodo === "Transferencia") {
+    copiarDatos();
+    alert("Realizá el pago y luego continuá");
+} else {
+    window.open("https://link.mercadopago.com.ar/dolcetropea", "_blank");
+}
+
+/* avanzar flujo */
+document.getElementById("btnPaso1").classList.add("hidden");
+document.getElementById("btnPaso2").classList.remove("hidden");
+}
+
+/* MENSAJE WHATSAPP */
 function armarTextoPedido() {
 
 let metodo = document.querySelector('input[name="metodo-pago"]:checked').value;
@@ -279,7 +270,6 @@ m += `📍 Entrega: ${datosPedido.entrega.direccion || "Retiro en local"}\n`;
 m += `💳 Pago: ${metodo}\n\n`;
 m += `🛒 PRODUCTOS:\n\n`;
 
-/* 🔥 ESTE ERA EL PUNTO QUE TE FALTABA */
 datosPedido.productos.forEach(p => {
     m += `• *${p.nombre}*\n`;
 
@@ -295,25 +285,18 @@ m += `\n💰 TOTAL: $${datosPedido.total}`;
 return m;
 }
 
-/* =========================
-   CONFIRMAR Y ENVIAR (CORREGIDO)
-========================= */
+/* PASO 2 */
 function confirmarYEnviar() {
-
-document.getElementById("payment-loading")
-.classList.remove("hidden");
 
 const mensaje = armarTextoPedido();
 const telefono = "5492975148986";
 
-const url = `https://wa.me/${telefono}?text=${encodeURIComponent(mensaje)}`;
-
-/* 🔥 FIX IMPORTANTE: limpiar ANTES de redirigir */
+/* limpiar primero */
 localStorage.removeItem("carrito");
 localStorage.removeItem("pedido_pendiente_pago");
 
-/* abrir whatsapp */
-window.location.href = url;
+window.location.href =
+`https://wa.me/${telefono}?text=${encodeURIComponent(mensaje)}`;
 }
 </script>
 
