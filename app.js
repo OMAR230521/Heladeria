@@ -448,7 +448,7 @@ document.addEventListener('DOMContentLoaded', () => {
         setTimeout(() => {
           preloader.classList.add('fade-out'); // Desvanecimiento suave
           sessionStorage.setItem('dolce_tropea_loaded', 'true');
-        }, 2000); // 2 segundos exactos para que caigan las 3 bochas perfectamente
+        }, 2700); // 2,7 segundos exactos para que caigan las 3 bochas perfectamente
       });
     }
   }
