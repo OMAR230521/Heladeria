@@ -439,16 +439,15 @@ document.addEventListener('DOMContentLoaded', () => {
   const preloader = document.getElementById('preloader');
   
   if (preloader) {
-    // Si ya navegó por la página en esta sesión, no lo mostramos más para agilizar
+    // Si ya es una pestaña navegada en la sesión, entra directo sin esperar
     if (sessionStorage.getItem('dolce_tropea_loaded')) {
       preloader.style.display = 'none';
     } else {
-      // Primera vez: esperamos a que todo cargue y sincronizamos con las bochas
       window.addEventListener('load', () => {
         setTimeout(() => {
-          preloader.classList.add('fade-out'); // Desvanecimiento suave
+          preloader.classList.add('fade-out'); // Cierre suave
           sessionStorage.setItem('dolce_tropea_loaded', 'true');
-        }, 2900); // 2,9 segundos exactos para que caigan las 3 bochas perfectamente
+        }, 2100); // 2.1 segundos en total: rápido, fluido y conciso
       });
     }
   }
