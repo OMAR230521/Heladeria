@@ -434,3 +434,23 @@ function setupEventListeners() {
     });
   }
 }
+
+document.addEventListener('DOMContentLoaded', () => {
+  const preloader = document.getElementById('preloader');
+  
+  if (preloader) {
+    // 🔍 Nos fijamos si el usuario ya entró a la web en esta sesión de navegación
+    if (sessionStorage.getItem('dolce_tropea_loaded')) {
+      // Si ya entró antes, eliminamos el loader de inmediato para no molestar
+      preloader.style.display = 'none';
+    } else {
+      // Si es su primera vez, esperamos a que cargue toda la página (imágenes, fuentes, etc.)
+      window.addEventListener('load', () => {
+        setTimeout(() => {
+          preloader.classList.add('fade-out'); // Desaparece suavemente
+          sessionStorage.setItem('dolce_tropea_loaded', 'true'); // Guarda el registro para que no vuelva a salir
+        }, 800); // 800ms de retraso para que se luzca el spinner en pantalla
+      });
+    }
+  }
+});
