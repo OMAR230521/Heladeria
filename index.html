@@ -28,6 +28,24 @@
   <!-- Favicon -->
   <link rel="icon" type="image/png" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🍦</text></svg>">
 
+  <script>
+  /* 🚫 ANTI-FLASHASO MODO OSCURO */
+  (function() {
+    // 1. Buscamos si el usuario ya tenía el modo oscuro guardado
+    // (Asegurate de que 'theme' sea la misma palabra clave que usás en tu script principal)
+    const temaGuardado = localStorage.getItem('theme'); 
+    
+    // 2. Si no hay nada guardado, nos fijamos si su sistema operativo usa modo oscuro por defecto
+    const prefiereOscuro = window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+    if (temaGuardado === 'dark' || (!temaGuardado && prefiereOscuro)) {
+      // Aplicamos el atributo al elemento HTML antes de que se renderice el body
+      document.documentElement.setAttribute('data-theme', 'dark');
+      document.documentElement.classList.add('dark');
+    }
+  })();
+</script>
+  
   <!-- Estilos CSS -->
   <link rel="stylesheet" href="styles.css">
 </head>
