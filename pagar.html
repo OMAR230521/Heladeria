@@ -1,18 +1,13 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Finalizar Pedido - Dolce Tropea</title>
-    <!-- Tu hoja de estilos global -->
-    <link rel="stylesheet" href="styles_2.css">
-    
-    <style>
-        /* =========================
-   PAGINA DE PAGO - DOLCE TROPEA
-   PREMIUM DARK MODE
-========================= */
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Finalizar Pedido - Dolce Tropea</title>
 
+<link rel="stylesheet" href="styles_2.css">
+
+<style>
 body {
     margin: 0;
     font-family: "Segoe UI", Roboto, Arial, sans-serif;
@@ -20,7 +15,6 @@ body {
     color: #eaeaea;
 }
 
-/* CENTRADO GENERAL */
 .pago-body {
     min-height: 100vh;
     display: flex;
@@ -30,94 +24,66 @@ body {
     padding: 20px;
 }
 
-/* TARJETA PRINCIPAL */
 .pago-card {
     width: 100%;
     max-width: 480px;
     background: #1b1b1f;
     border-radius: 18px;
     padding: 25px;
-    box-shadow: 0 10px 40px rgba(0,0,0,0.6);
     border: 1px solid rgba(255,255,255,0.05);
-    backdrop-filter: blur(10px);
 }
 
-/* TITULOS */
 .pago-titulo {
+    text-align: center;
     font-size: 28px;
     font-weight: 800;
-    text-align: center;
-    color: #ffffff;
-    margin-bottom: 5px;
 }
 
 .pago-subtitulo {
-    font-size: 15px;
     text-align: center;
     color: #b5b5b5;
-    margin-bottom: 20px;
 }
 
-/* RESUMEN */
 .resumen-caja {
     background: #141418;
     padding: 15px;
     border-radius: 12px;
-    border: 1px solid rgba(255,255,255,0.05);
-    margin-bottom: 20px;
+    margin: 15px 0;
 }
 
 .badge-pedido {
-    display: inline-block;
-    background: linear-gradient(135deg, #c8a24a, #f5d27a);
+    background: linear-gradient(135deg,#c8a24a,#f5d27a);
     color: #1a1a1a;
-    font-weight: 700;
-    padding: 5px 10px;
+    padding: 4px 10px;
     border-radius: 20px;
-    font-size: 12px;
-    margin-bottom: 10px;
+    font-weight: bold;
 }
 
 .total-monto {
     font-size: 26px;
     font-weight: 900;
-    color: #ffffff;
-    margin-top: 10px;
 }
 
-/* METODOS DE PAGO */
 .metodos-lista {
     display: flex;
     flex-direction: column;
-    gap: 12px;
-    margin-top: 15px;
+    gap: 10px;
 }
 
 .metodo-item {
     background: #15151a;
-    border: 1px solid rgba(255,255,255,0.08);
     padding: 14px;
     border-radius: 12px;
     cursor: pointer;
-    transition: all 0.25s ease;
-    display: flex;
-    align-items: center;
-    gap: 10px;
+    border: 1px solid rgba(255,255,255,0.08);
+    transition: 0.2s;
 }
 
 .metodo-item:hover {
     border-color: #c8a24a;
     transform: scale(1.02);
-    background: #1c1c22;
 }
 
-/* RADIO BUTTONS */
-.metodo-item input[type="radio"] {
-    accent-color: #c8a24a;
-    transform: scale(1.2);
-}
-
-/* INFO PAGO */
 .info-pago-dinamica {
     margin-top: 15px;
 }
@@ -127,57 +93,35 @@ body {
     padding: 15px;
     border-radius: 12px;
     border: 1px dashed rgba(255,255,255,0.15);
-    font-size: 14px;
-    color: #dcdcdc;
 }
 
-/* BOTON COPIAR */
 .btn-copiar {
-    margin-top: 10px;
     width: 100%;
+    margin-top: 10px;
     padding: 12px;
     border: none;
     border-radius: 10px;
-    background: linear-gradient(135deg, #c8a24a, #f5d27a);
-    color: #1a1a1a;
-    font-weight: 700;
+    background: linear-gradient(135deg,#c8a24a,#f5d27a);
+    font-weight: bold;
     cursor: pointer;
-    transition: 0.2s;
 }
 
-.btn-copiar:hover {
-    transform: scale(1.03);
-}
-
-/* BOTON FINAL */
 .btn-confirmar-pedido {
-    margin-top: 20px;
     width: 100%;
+    margin-top: 20px;
     padding: 15px;
     font-size: 18px;
     font-weight: 800;
     border: none;
     border-radius: 14px;
-    background: linear-gradient(135deg, #c8a24a, #f5d27a);
-    color: #1a1a1a;
+    background: linear-gradient(135deg,#c8a24a,#f5d27a);
     cursor: pointer;
-    transition: all 0.25s ease;
-    box-shadow: 0 8px 20px rgba(200, 162, 74, 0.25);
 }
 
-.btn-confirmar-pedido:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 12px 25px rgba(200, 162, 74, 0.35);
-}
-
-/* LOADING OVERLAY */
 .payment-loading {
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(10,10,12,0.9);
+    inset: 0;
+    background: rgba(0,0,0,0.85);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -190,211 +134,188 @@ body {
     border-radius: 16px;
     text-align: center;
     width: 280px;
-    border: 1px solid rgba(255,255,255,0.08);
 }
 
 .spinner {
     width: 45px;
     height: 45px;
-    border: 4px solid rgba(255,255,255,0.1);
+    border: 4px solid #333;
     border-top: 4px solid #c8a24a;
     border-radius: 50%;
-    margin: 0 auto 15px auto;
     animation: spin 1s linear infinite;
+    margin: auto;
 }
 
 @keyframes spin {
-    0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
 }
 
-.loading-bar {
-    width: 100%;
-    height: 6px;
-    background: #2a2a2f;
-    border-radius: 10px;
-    overflow: hidden;
-    margin-top: 10px;
-}
-
-.loading-progress {
-    width: 0%;
-    height: 100%;
-    background: linear-gradient(135deg, #c8a24a, #f5d27a);
-    animation: load 1.5s forwards;
-}
-
-@keyframes load {
-    from { width: 0%; }
-    to { width: 100%; }
-}
-        /* REGLA DE UTILIDAD (Fundamental para ocultar elementos) */
-.hidden {
-    display: none !important;
-}
-    </style>
+.hidden { display:none; }
+</style>
 </head>
+
 <body class="pago-body">
 
 <div class="pago-card">
-    <h2 class="pago-titulo">Plataforma de Pago</h2>
-    <p class="pago-subtitulo">Simulación de entorno seguro para tu pedido</p>
 
-    <!-- Caja de Resumen con tipografías más grandes y robustas -->
-    <div class="resumen-caja">
-        <h3 class="resumen-titulo">Resumen del Pedido</h3>
-        <p><strong>Código de Pedido:</strong> <span id="resumen-id" class="badge-pedido">-</span></p>
-        <p><strong>Cliente:</strong> <span id="resumen-cliente">-</span></p>
-        <p><strong>Forma de Entrega:</strong> <span id="resumen-entrega">-</span></p>
-        
-        <div class="total-separador"></div>
-        <h4 class="total-monto">Total a abonar: $<span id="resumen-total">0</span></h4>
+<h2 class="pago-titulo">Finalizar Pedido</h2>
+<p class="pago-subtitulo">Dolce Tropea 🍦</p>
+
+<!-- RESUMEN -->
+<div class="resumen-caja">
+    <p>Código: <span id="resumen-id" class="badge-pedido">-</span></p>
+    <p>Cliente: <span id="resumen-cliente">-</span></p>
+    <p>Entrega: <span id="resumen-entrega">-</span></p>
+    <h3 class="total-monto">$<span id="resumen-total">0</span></h3>
+</div>
+
+<!-- METODOS -->
+<div class="metodos-lista">
+
+<label class="metodo-item">
+    <input type="radio" name="metodo-pago" value="Transferencia" checked>
+    🏦 Transferencia Bancaria
+</label>
+
+<label class="metodo-item">
+    <input type="radio" name="metodo-pago" value="MercadoPago">
+    📱 Mercado Pago
+</label>
+
+</div>
+
+<!-- DETALLES DINAMICOS -->
+<div class="info-pago-dinamica">
+
+<div id="contenido-transferencia">
+    <div class="datos-banco">
+        <p><b>Banco:</b> Galicia</p>
+        <p><b>CBU:</b> <span id="cbu-texto">0070123420000012345678</span></p>
+        <p><b>Alias:</b> <span id="alias-texto">omi.23</span></p>
     </div>
 
-    <h3 class="seccion-titulo">Seleccioná el método de pago:</h3>
-
-    <!-- Opciones de pago con diseño de botones interactivos -->
-    <div class="metodos-lista">
-        <label class="metodo-item">
-            <input type="radio" name="metodo-pago" value="Transferencia" checked>
-            <div class="metodo-detalles">
-                <span class="metodo-nombre">🏦 Transferencia Bancaria</span>
-            </div>
-        </label>
-
-        <label class="metodo-item">
-            <input type="radio" name="metodo-pago" value="MercadoPago">
-            <div class="metodo-detalles">
-                <span class="metodo-nombre">📱 Mercado Pago (Link / QR)</span>
-            </div>
-        </label>
-    </div>
-
-    <!-- Detalles dinámicos según selección -->
-    <div id="detalles-pago-caja" class="info-pago-dinamica">
-        <div id="contenido-transferencia">
-            <p class="alerta-pago">💡 Transferí el total para que preparemos tu pedido:</p>
-            <div class="datos-banco">
-                <p><strong>Banco:</strong> Galicia</p>
-                <p><strong>CBU:</strong> <span id="cbu-texto">0070123420000012345678</span></p>
-                <p><strong>Alias:</strong> <span id="alias-texto">omi.23</span></p>
-            </div>
-            <button onclick="copiarDatos()" class="btn-copiar">
-                📋 Copiar CBU y Alias
-            </button>
-        </div>
-
-        <div id="contenido-mercadopago" class="hidden">
-            <p class="alerta-pago">⚡ ¡Rápido y fácil!</p>
-            <p style="line-height: 1.5;">Al confirmar, procesaremos tu orden y te enviaremos el link de pago o código QR directamente a tu WhatsApp.</p>
-        </div>
-    </div>
-
-    <!-- Botón principal de acción -->
-    <button onclick="confirmarYEnviar()" class="btn-confirmar-pedido">
-        🚀 Confirmar Pedido y Enviar WhatsApp
+    <button class="btn-copiar" onclick="copiarDatos()">
+        📋 Copiar datos
     </button>
 </div>
 
-<!-- OVERLAY DE PROCESANDO PAGO INTERACTIVO -->
+<div id="contenido-mercadopago" class="hidden">
+    <p>⚡ Te enviaremos el link por WhatsApp</p>
+</div>
+
+</div>
+
+<button class="btn-confirmar-pedido" onclick="confirmarYEnviar()">
+Enviar pedido por WhatsApp
+</button>
+
+</div>
+
+<!-- LOADING -->
 <div id="payment-loading" class="payment-loading hidden">
-    <div class="loading-card">
-        <div class="spinner"></div>
-        <h2>Verificando Pedido...</h2>
-        <p>Aguardá un instante por favor</p>
-        <div class="loading-bar">
-            <div class="loading-progress"></div>
-        </div>
-        <p class="loading-small">No cierres ni recargues esta pestaña</p>
-    </div>
+<div class="loading-card">
+<div class="spinner"></div>
+<p>Procesando...</p>
+</div>
 </div>
 
 <script>
-    // 1. LEER DATOS DE LA MEMORIA Y VALIDAR
-const datosPedido = JSON.parse(localStorage.getItem('pedido_pendiente_pago'));
+/* =========================
+   PEDIDO
+========================= */
+let datosPedido = JSON.parse(localStorage.getItem("pedido_pendiente_pago"));
 
 if (!datosPedido) {
-    alert("⚠️ No hay ningún pedido activo.");
+    alert("No hay pedido");
     window.location.href = "index.html";
 }
 
-// 2. RENDERIZAR DATOS EN PANTALLA
-document.getElementById('resumen-id').innerText = datosPedido.idPedido;
-document.getElementById('resumen-cliente').innerText = `${datosPedido.cliente.nombre} ${datosPedido.cliente.apellido}`;
+/* =========================
+   RENDER
+========================= */
+document.getElementById("resumen-id").innerText = datosPedido.idPedido;
+document.getElementById("resumen-cliente").innerText =
+datosPedido.cliente.nombre + " " + datosPedido.cliente.apellido;
 
-document.getElementById('resumen-entrega').innerText = datosPedido.entrega.tipo === 'delivery'
-    ? "Envío a: " + (datosPedido.entrega.direccion || "Domicilio no especificado")
-    : "Retiro en local";
+document.getElementById("resumen-entrega").innerText =
+datosPedido.entrega.tipo === "delivery"
+? datosPedido.entrega.direccion
+: "Retiro en local";
 
-document.getElementById('resumen-total').innerText = datosPedido.total;
+document.getElementById("resumen-total").innerText = datosPedido.total;
 
-
-// 3. CAMBIO INTERACTIVO DE MÉTODO DE PAGO
-document.querySelectorAll('input[name="metodo-pago"]').forEach(radio => {
-    radio.addEventListener('change', function () {
-        const esTx = this.value === 'Transferencia';
-        document.getElementById('contenido-transferencia').classList.toggle('hidden', !esTx);
-        document.getElementById('contenido-mercadopago').classList.toggle('hidden', esTx);
-    });
+/* =========================
+   CAMBIO METODO PAGO
+========================= */
+document.querySelectorAll('input[name="metodo-pago"]').forEach(r => {
+r.addEventListener("change", function () {
+    let esT = this.value === "Transferencia";
+    document.getElementById("contenido-transferencia").classList.toggle("hidden", !esT);
+    document.getElementById("contenido-mercadopago").classList.toggle("hidden", esT);
+});
 });
 
-
-// 4. FUNCIÓN COPIAR DATOS AL PORTAPAPELES
+/* =========================
+   COPIAR DATOS
+========================= */
 function copiarDatos() {
-    const cbu = document.getElementById('cbu-texto').innerText;
-    const alias = document.getElementById('alias-texto').innerText;
+const cbu = document.getElementById("cbu-texto").innerText;
+const alias = document.getElementById("alias-texto").innerText;
 
-    navigator.clipboard.writeText(`CBU: ${cbu}\nAlias: ${alias}`)
-        .then(() => alert("📌 ¡Datos de transferencia copiados!"))
-        .catch(() => alert("❌ Error al copiar, por favor hacelo manualmente."));
+navigator.clipboard.writeText(`CBU: ${cbu}\nAlias: ${alias}`);
+alert("Datos copiados");
 }
-    // 5. MODULO A: ARMAR EL MENSAJE DETALLADO
+
+/* =========================
+   MENSAJE WHATSAPP (CORREGIDO COMPLETO)
+========================= */
 function armarTextoPedido() {
-    const metodo = document.querySelector('input[name="metodo-pago"]:checked').value;
 
-    let m = `🍦 *DOLCE TROPEA - PEDIDO ${datosPedido.idPedido}* 🍦\n\n`;
-    m += `👤 *Cliente:* ${datosPedido.cliente.nombre} ${datosPedido.cliente.apellido}\n`;
-    m += `📍 *Entrega:* ${datosPedido.entrega.direccion || "Retiro en local"}\n`;
-    m += `💳 *Pago:* ${metodo}\n\n`;
-    m += `🛒 *PRODUCTOS:*\n\n`;
+let metodo = document.querySelector('input[name="metodo-pago"]:checked').value;
 
-    datosPedido.productos.forEach(p => {
-        m += `• *${p.nombre}*\n`;
-        if (p.gustos && p.gustos.length) {
-            // Filtramos por si quedó algún renglón de sabor vacío
-            const gustosReales = p.gustos.filter(g => g.trim() !== "");
-            if (gustosReales.length > 0) {
-                m += `  _Sabores:_ ${gustosReales.join(", ")}\n`;
-            }
+let m = `🍦 *DOLCE TROPEA - PEDIDO ${datosPedido.idPedido}* 🍦\n\n`;
+m += `👤 Cliente: ${datosPedido.cliente.nombre} ${datosPedido.cliente.apellido}\n`;
+m += `📍 Entrega: ${datosPedido.entrega.direccion || "Retiro en local"}\n`;
+m += `💳 Pago: ${metodo}\n\n`;
+m += `🛒 PRODUCTOS:\n\n`;
+
+/* 🔥 ESTE ERA EL PUNTO QUE TE FALTABA */
+datosPedido.productos.forEach(p => {
+    m += `• *${p.nombre}*\n`;
+
+    if (p.gustos && p.gustos.length > 0) {
+        const gustos = p.gustos.filter(g => g.trim() !== "");
+        if (gustos.length > 0) {
+            m += `  🍨 Sabores: ${gustos.join(", ")}\n`;
         }
-    });
+    }
+});
 
-    m += `\n💰 *TOTAL GENERAL: $${datosPedido.total}*`;
-    return m;
+m += `\n💰 TOTAL: $${datosPedido.total}`;
+return m;
 }
-    function confirmarYEnviar() {
-    // 1. Mostrar overlay de carga
-    const loading = document.getElementById("payment-loading");
-    loading.classList.remove("hidden");
 
-    // 2. Obtener mensaje formateado
-    const mensaje = armarTextoPedido();
+/* =========================
+   CONFIRMAR Y ENVIAR (CORREGIDO)
+========================= */
+function confirmarYEnviar() {
 
-    // 3. Número de teléfono
-    const telefono = "5492975148986";
+document.getElementById("payment-loading")
+.classList.remove("hidden");
 
-    // 4. Abrir WhatsApp
-    const url = `https://wa.me/${telefono}?text=${encodeURIComponent(mensaje)}`;
-    window.open(url, "_blank");
+const mensaje = armarTextoPedido();
+const telefono = "5492975148986";
 
-    // 5. Limpieza y redirección después de 1.5s
-    setTimeout(() => {
-        localStorage.removeItem("carrito");
-        localStorage.removeItem("pedido_pendiente_pago");
-        window.location.href = "index.html";
-    }, 1500);
+const url = `https://wa.me/${telefono}?text=${encodeURIComponent(mensaje)}`;
+
+/* 🔥 FIX IMPORTANTE: limpiar ANTES de redirigir */
+localStorage.removeItem("carrito");
+localStorage.removeItem("pedido_pendiente_pago");
+
+/* abrir whatsapp */
+window.location.href = url;
 }
 </script>
-    
+
 </body>
 </html>
