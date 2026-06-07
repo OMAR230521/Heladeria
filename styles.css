@@ -1446,12 +1446,12 @@ button {
 .loading-small { font-size: 0.8rem; margin-top: 12px; opacity: 0.7; }
 
 /* ==========================================================================
-   PANTALLA DE CARGA (PRELOADER) - HELADO ANIMADO
+   PANTALLA DE CARGA - HELADO 3D CON GOTEO ANIMADO
    ========================================================================== */
 .preloader {
   position: fixed;
   inset: 0;
-  background-color: var(--color-bg-base); /* Se adapta a modo claro/oscuro */
+  background-color: var(--color-bg-base);
   z-index: 99999;
   display: flex;
   align-items: center;
@@ -1472,59 +1472,97 @@ button {
   gap: 30px;
 }
 
-/* Contenedor del helado */
+/* Contenedor del Helado (Un poco más ancho para la nueva distribución) */
 .ice-cream-loader {
   position: relative;
-  width: 80px;
+  width: 120px;
   height: 160px;
 }
 
-/* El Cucurucho (Triángulo CSS perfecto) */
+/* 🧇 El Cucurucho con Textura Waffle Real */
 .cone {
   position: absolute;
   bottom: 10px;
-  left: 20px;
-  width: 0;
-  height: 0;
-  border-left: 20px solid transparent;
-  border-right: 20px solid transparent;
-  border-top: 45px solid #d4a373; /* Tono galleta/cucurucho */
+  left: 30px;
+  width: 60px;
+  height: 75px;
+  background: #d4a373;
+  /* Entramado de líneas cruzadas para la textura de galleta */
+  background-image: 
+    linear-gradient(115deg, rgba(0, 0, 0, 0.12) 1px, transparent 1px),
+    linear-gradient(245deg, rgba(0, 0, 0, 0.12) 1px, transparent 1px);
+  background-size: 8px 8px;
+  clip-path: polygon(0 0, 100% 0, 50% 100%);
 }
 
-/* Base general para todas las bochas */
+/* 🔮 Estilo Base 3D de las Bochas */
 .scoop {
   position: absolute;
-  width: 46px;
-  height: 46px;
+  width: 52px;
+  height: 52px;
   border-radius: 50%;
-  left: 17px; /* Centrado perfecto sobre el cucurucho */
   opacity: 0;
-  /* El truco 'cubic-bezier' genera el efecto elástico/rebote al caer */
-  animation: dropScoop 0.45s cubic-bezier(0.175, 0.885, 0.32, 1.15) forwards;
+  animation: dropScoop3D 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.15) forwards;
 }
 
-/* --- BOCHA 1: Chocolate / Dulce de Leche --- */
+/* --- BOCHA 1: Chocolate Realista (Abajo Izquierda) --- */
 .scoop-1 {
-  background-color: #704214; 
-  bottom: 46px;
-  animation-delay: 0.2s; /* Cae primero */
+  background: radial-gradient(circle at 35% 35%, #8b5a2b, #4a2c11);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  bottom: 65px;
+  left: 14px;
+  animation-delay: 0.2s;
 }
 
-/* --- BOCHA 2: Frutilla / Frambuesa --- */
+/* --- BOCHA 2: Frutilla Tentación (Abajo Derecha) --- */
 .scoop-2 {
-  background-color: #ff8fab; 
-  bottom: 74px;
-  animation-delay: 0.7s; /* Cae segunda */
+  background: radial-gradient(circle at 35% 35%, #ff9ebb, #e63946);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  bottom: 65px;
+  left: 54px;
+  animation-delay: 1.1s; /* Cae después del efecto de la gota */
 }
 
-/* --- BOCHA 3: Crema Americana / Vainilla --- */
+/* --- BOCHA 3: Crema Americana / Vainilla (Arriba Centro) --- */
+/* Se le aplicó un gradiente suave y un borde imperceptible para que no se pierda en blanco */
 .scoop-3 {
-  background-color: #fff0f5; 
-  bottom: 102px;
-  animation-delay: 1.2s; /* Cae tercera */
+  background: radial-gradient(circle at 35% 35%, #ffffff, #f4e8c1);
+  box-shadow: 
+    0 4px 8px rgba(0, 0, 0, 0.1), 
+    0 0 0 1px rgba(0, 0, 0, 0.06); /* Sutil relieve anti-blanco */
+  bottom: 98px;
+  left: 34px;
+  animation-delay: 1.7s; /* Cae al final coronando el helado */
 }
 
-/* Texto de la marca */
+/* 💧 Dinámica de la Gota derramada */
+.cone-drip {
+  position: absolute;
+  bottom: 54px;
+  left: 32px;
+  width: 12px;
+  height: 16px;
+  background: #5c3616; /* Color del chocolate derretido */
+  border-radius: 0 0 6px 6px;
+  transform: scaleY(0);
+  transform-origin: top;
+  animation: meltDrip 0.4s ease forwards 0.65s; /* Se activa justo cuando cae el chocolate */
+}
+
+/* Micro gotita que se desprende y cae */
+.cone-droplet {
+  position: absolute;
+  bottom: 54px;
+  left: 35px;
+  width: 6px;
+  height: 6px;
+  background: #4a2c11;
+  border-radius: 50%;
+  opacity: 0;
+  animation: fallDroplet 0.6s ease-in forwards 0.9s;
+}
+
+/* Texto de la Marca */
 .preloader-logo {
   font-family: 'Outfit', sans-serif;
   font-weight: 800;
@@ -1533,17 +1571,36 @@ button {
   color: var(--color-primary);
 }
 
-/* Animación de caída libre con escala */
-@keyframes dropScoop {
+/* ==========================================================================
+   ANIMACIONES RELATIVAS
+   ========================================================================== */
+@keyframes dropScoop3D {
   0% {
-    transform: translateY(-200px) scale(0.7);
+    transform: translateY(-160px) scale(0.6) rotate(-10deg);
     opacity: 0;
   }
-  50% {
+  100% {
+    transform: translateY(0) scale(1) rotate(0deg);
+    opacity: 1;
+  }
+}
+
+/* El chocolate empieza a desbordar por el borde del cono */
+@keyframes meltDrip {
+  100% { transform: scaleY(1); }
+}
+
+/* La gotita se junta, se desprende y cae libremente */
+@keyframes fallDroplet {
+  0% {
+    opacity: 1;
+    transform: translateY(12px) scale(1);
+  }
+  80% {
     opacity: 1;
   }
   100% {
-    transform: translateY(0) scale(1);
-    opacity: 1;
+    opacity: 0;
+    transform: translateY(45px) scale(0.8);
   }
 }
