@@ -1446,7 +1446,7 @@ button {
 .loading-small { font-size: 0.8rem; margin-top: 12px; opacity: 0.7; }
 
 /* ==========================================================================
-   PRELOADER HI-FI: TEXTURA WAFFLE, SOMBRAS REALES Y FÍSICA DE IMPACTO
+   PRELOADER CINEMÁTICO: ENTRADAS LATERALES Y ALTA VELOCIDAD
    ========================================================================== */
 .preloader {
   position: fixed;
@@ -1456,7 +1456,7 @@ button {
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: opacity 0.5s ease, visibility 0.5s ease;
+  transition: opacity 0.4s ease, visibility 0.4s ease;
 }
 
 .preloader.fade-out {
@@ -1469,7 +1469,7 @@ button {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 30px;
+  gap: 35px;
 }
 
 /* Contenedor del Helado */
@@ -1479,7 +1479,7 @@ button {
   height: 180px;
 }
 
-/* 🧇 Cucurucho con Textura de Rejas Cruzadas Reales (Estilo image_75cf05.png) */
+/* 🧇 Cucurucho Evolucionado (Efecto Curvo 3D basado en image_75c34a.png) */
 .cone {
   position: absolute;
   bottom: 10px;
@@ -1487,65 +1487,61 @@ button {
   width: 60px;
   height: 85px;
   background: #de9b52;
-  /* Rejas cruzadas perfectas con relieve oscuro y claro */
+  /* Capa 1: Sombra de redondez a la derecha | Capa 2 y 3: Rejas cruzadas */
   background-image: 
-    linear-gradient(135deg, rgba(139, 79, 18, 0.3) 15%, transparent 15%, transparent 50%, rgba(139, 79, 18, 0.3) 50%, rgba(139, 79, 18, 0.3) 65%, transparent 65%),
+    linear-gradient(to right, transparent 35%, rgba(0, 0, 0, 0.22) 100%),
+    linear-gradient(135deg, rgba(139, 79, 18, 0.35) 15%, transparent 15%, transparent 50%, rgba(139, 79, 18, 0.35) 50%, rgba(139, 79, 18, 0.35) 65%, transparent 65%),
     linear-gradient(45deg, rgba(255, 255, 255, 0.15) 15%, transparent 15%, transparent 50%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.15) 65%, transparent 65%);
-  background-size: 14px 14px;
+  background-size: 100% 100%, 12px 12px, 12px 12px;
   clip-path: polygon(0 0, 100% 0, 50% 100%);
-  filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1));
+  filter: drop-shadow(0 5px 8px rgba(0,0,0,0.18));
+  
+  /* Entrada fluida desde la izquierda */
+  opacity: 0;
+  animation: slideInFromLeft 0.45s cubic-bezier(0.25, 1, 0.5, 1) forwards;
 }
 
-/* 🔮 Estilo Base 3D Avanzado (Inspirado en volumen de image_75d270.png) */
+/* 🔮 Bochas con Caída de Alta Velocidad (0.32 segundos de duración) */
 .scoop {
   position: absolute;
   width: 54px;
   height: 54px;
   border-radius: 50%;
   opacity: 0;
-  /* Usamos la nueva animación elástica fluida */
-  animation: fluidOvershootDrop 0.65s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+  animation: fastOvershootDrop 0.32s cubic-bezier(0.25, 1, 0.5, 1) forwards;
 }
 
-/* --- BOCHA 1: Chocolate (Abajo Izquierda) --- */
+/* --- BOCHA 1: Chocolate (Cae al toque después del cono) --- */
 .scoop-1 {
   background: radial-gradient(circle at 35% 35%, #7a431d 0%, #40200a 70%, #241104 100%);
-  box-shadow: 
-    inset -3px -3px 8px rgba(0,0,0,0.6),
-    2px 5px 10px rgba(0, 0, 0, 0.25);
+  box-shadow: inset -3px -3px 8px rgba(0,0,0,0.6), 2px 5px 10px rgba(0, 0, 0, 0.25);
   bottom: 70px;
   left: 12px;
   z-index: 2;
-  animation-delay: 0.2s;
+  animation-delay: 0.45s; /* Entra ni bien frena el cono */
 }
 
-/* --- BOCHA 2: Frutilla (Abajo Derecha) --- */
+/* --- BOCHA 2: Frutilla (Seguidilla rápida) --- */
 .scoop-2 {
   background: radial-gradient(circle at 35% 35%, #ff7597 0%, #d62846 70%, #800c20 100%);
-  box-shadow: 
-    inset -3px -3px 8px rgba(0,0,0,0.5),
-    -2px 5px 10px rgba(0, 0, 0, 0.23);
+  box-shadow: inset -3px -3px 8px rgba(0,0,0,0.5), -2px 5px 10px rgba(0, 0, 0, 0.23);
   bottom: 70px;
   left: 54px;
-  z-index: 1; /* Queda ligeramente retirada atrás del chocolate */
-  animation-delay: 0.9s;
+  z-index: 1;
+  animation-delay: 0.7s; 
 }
 
-/* --- BOCHA 3: Crema Americana (Arriba Centro - Corona el Helado) --- */
+/* --- BOCHA 3: Crema Americana (Corona al instante) --- */
 .scoop-3 {
   background: radial-gradient(circle at 35% 35%, #ffffff 0%, #fff7e0 60%, #e0d2b4 100%);
-  /* Sombra proyectada desde arriba hacia abajo cubriendo parte de las bochas inferiores */
-  box-shadow: 
-    inset -2px -2px 6px rgba(0, 0, 0, 0.15),
-    0 8px 12px rgba(0, 0, 0, 0.35), /* Sombra física sobre chocolate y frutilla */
-    0 0 0 1px rgba(0, 0, 0, 0.08); 
+  box-shadow: inset -2px -2px 6px rgba(0, 0, 0, 0.15), 0 8px 12px rgba(0, 0, 0, 0.35), 0 0 0 1px rgba(0, 0, 0, 0.08); 
   bottom: 104px;
   left: 33px;
-  z-index: 3; /* Arriba de absolutamente todo */
-  animation-delay: 1.6s;
+  z-index: 3;
+  animation-delay: 0.95s;
 }
 
-/* 💧 Gota de Chocolate Derramada (Sincronizada con el impacto) */
+/* 💧 Gota de Chocolate (Acelerada para empalmar con la velocidad) */
 .cone-drip {
   position: absolute;
   bottom: 56px;
@@ -1557,7 +1553,7 @@ button {
   transform: scaleY(0);
   transform-origin: top;
   z-index: 2;
-  animation: meltDrip 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards 0.7s;
+  animation: meltDrip 0.3s ease-out forwards 0.72s;
 }
 
 .cone-droplet {
@@ -1570,39 +1566,55 @@ button {
   border-radius: 50%;
   opacity: 0;
   z-index: 2;
-  animation: fallDroplet 0.7s ease-in forwards 1s;
+  animation: fallDroplet 0.4s ease-in forwards 0.9s;
 }
 
-/* Texto de la Marca */
+/* 🏷️ Texto "Dolce Tropea" (Más grande y con entrada izquierda) */
 .preloader-logo {
   font-family: 'Outfit', sans-serif;
   font-weight: 800;
-  font-size: 1.6rem;
+  font-size: 2.1rem; /* Subido el tamaño como pediste */
   letter-spacing: 1px;
   color: var(--color-primary);
+  
+  opacity: 0;
+  animation: slideInFromLeft 0.45s cubic-bezier(0.25, 1, 0.5, 1) forwards;
 }
 
 /* ==========================================================================
-   ANIMACIÓN CON FÍSICA REAL: OVERSHOOT & SQUISH (Pasar de largo y rebotar)
+   ANIMACIONES OPTIMIZADAS (MÁS VELOCIDAD Y FLUIDEZ)
    ========================================================================== */
-@keyframes fluidOvershootDrop {
+
+/* Entrada elegante desde la izquierda para Cono y Texto juntos */
+@keyframes slideInFromLeft {
   0% {
-    transform: translateY(-220px) scaleY(1.4) scaleX(0.7); /* Viene estirada por la velocidad */
+    transform: translateX(-50px);
     opacity: 0;
   }
-  45% {
+  100% {
+    transform: translateX(0);
     opacity: 1;
   }
-  65% {
-    /* IMPACTO: Pasa un poquito de largo su posición final y se deforma horizontalmente */
-    transform: translateY(8px) scaleY(0.8) scaleX(1.15); 
+}
+
+/* Caída veloz con rebote orgánico e impacto elástico */
+@keyframes fastOvershootDrop {
+  0% {
+    transform: translateY(-180px) scaleY(1.4) scaleX(0.7);
+    opacity: 0;
   }
-  82% {
-    /* REBOTE: Sube un milímetro de más recuperando la forma hacia arriba */
-    transform: translateY(-3px) scaleY(1.05) scaleX(0.95);
+  40% {
+    opacity: 1;
+  }
+  70% {
+    /* Impacta y baja un cachito de más aplastándose */
+    transform: translateY(5px) scaleY(0.88) scaleX(1.1); 
+  }
+  90% {
+    /* Micro rebote hacia arriba antes de asentarse */
+    transform: translateY(-2px) scaleY(1.02) scaleX(0.98);
   }
   100% {
-    /* POSICIÓN FINAL: Estabilizado perfecto */
     transform: translateY(0) scale(1);
     opacity: 1;
   }
@@ -1613,7 +1625,6 @@ button {
 }
 
 @keyframes fallDroplet {
-  0% { opacity: 1; transform: translateY(15px) scale(1); }
-  70% { opacity: 1; }
-  100% { opacity: 0; transform: translateY(55px) scale(0.7); }
+  0% { opacity: 1; transform: translateY(12px) scale(1); }
+  100% { opacity: 0; transform: translateY(40px) scale(0.7); }
 }
